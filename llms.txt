@@ -14,6 +14,7 @@
 ## Datos
 
 - [snapshot.json](https://cqdvccjpwwyesvoumyjd.supabase.co/storage/v1/object/public/radar-publico/snapshot.json): los conteos vigentes. Campos por departamento: hechos7d, hechos24h, hechos24hAnterior, corroborados7d, temaPrincipal. Incluye totales, fecha de generación y si los datos están al día.
+- Licencia: CC BY 4.0. Se pueden reusar citando "Radar Público, M+ Intelligence (radar.mpluscorp.com)".
 
 ## M+ Corp
 

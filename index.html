@@ -27,7 +27,8 @@
 <!-- Datos estructurados: quién publica (M+ Corp), el sitio y el conjunto de
      datos abierto. Dataset hace que snapshot.json pueda aparecer en Google
      Dataset Search y que los asistentes de IA entiendan qué mide y de dónde
-     sale. Sin licencia declarada a propósito: es decisión de Mercedes. -->
+     sale. Licencia CC BY 4.0 (Mercedes, 23/11): cualquiera puede reusar los datos
+     citando a M+ Intelligence; cada cita es un enlace de vuelta. -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://mpluscorp.com/#org","name":"M+ Corp","url":"https://mpluscorp.com/",
@@ -37,7 +38,9 @@
   "inLanguage":"es-GT","publisher":{"@id":"https://mpluscorp.com/#org"}},
  {"@type":"Dataset","name":"Radar Público: hechos por departamento en Guatemala",
   "description":"Conteo de hechos de seguridad y violencia, conflictividad, protestas y bloqueos, desastres y emergencias, y servicios públicos en los 22 departamentos de Guatemala, en ventanas de 7 días y de 24 horas. Un hecho es una historia con cobertura en prensa o redes; corroborado es un hecho cubierto por dos medios distintos o más. Se actualiza cada hora.",
-  "url":"https://radar.mpluscorp.com/","isAccessibleForFree":true,"inLanguage":"es",
+  "url":"https://radar.mpluscorp.com/","isAccessibleForFree":true,
+  "license":"https://creativecommons.org/licenses/by/4.0/deed.es",
+  "creditText":"Radar Público, M+ Intelligence (radar.mpluscorp.com)","inLanguage":"es",
   "keywords":["Guatemala","conflictividad","bloqueos","seguridad","desastres","servicios públicos","departamentos","monitoreo de medios"],
   "spatialCoverage":{"@type":"Place","name":"Guatemala","geo":{"@type":"GeoShape","box":"13.7 -92.3 17.9 -88.2"}},
   "measurementTechnique":"Clasificación automática de prensa nacional y regional y de cuentas de medios e instituciones en redes; agrupación de notas en historias; un hecho por historia.",
@@ -448,7 +451,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
   </div>
   <div class="legal">
     <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel">mpluscorp.com</a></span>
-    <span>Datos abiertos: <a id="b-json" href="#">snapshot.json</a> · <span id="pie-gen"></span></span>
+    <span>Datos abiertos: <a id="b-json" href="#">snapshot.json</a>, con licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" rel="license">CC BY 4.0</a>: se pueden reusar citando "Radar Público, M+ Intelligence" · <span id="pie-gen"></span></span>
   </div>
 </footer>
 
