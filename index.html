@@ -155,7 +155,7 @@ button{font:inherit;}
 .leyenda{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:12px;color:#C9C4E4;margin-top:10px;}
 .leyenda .esc{display:flex;gap:2px;}
 .leyenda .sw{width:22px;height:8px;border-radius:2px;display:inline-block;}
-.velo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.velo{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;}
 .velo div{background:rgba(22,12,66,.88);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 20px;max-width:320px;
   text-align:center;font-size:13.5px;color:#C9C4E4;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .velo strong{display:block;color:#fff;font-size:15px;font-weight:600;margin-bottom:4px;}
@@ -366,7 +366,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       </div>
       <div class="mapa-caja">
         <svg id="mapa" viewBox="0 0 600 633" role="img" aria-label="Mapa de Guatemala por departamento"></svg>
-        <div class="velo" id="velo" hidden><div><strong>Los datos se están poniendo al día</strong><span id="velo-t"></span></div></div>
+        <div class="velo" id="velo" hidden><div><strong id="velo-tit">Los datos se están poniendo al día</strong><span id="velo-t"></span></div></div>
       </div>
       <div class="leyenda" id="leyenda" aria-hidden="true"></div>
       <span class="marca-agua">radar.mpluscorp.com</span>
@@ -499,7 +499,7 @@ const CERO = '#2B2170';
 
 const fmt = new Intl.NumberFormat('es-GT');
 const $ = id => document.getElementById(id);
-let datos = null, medida = 'hechos7d', seleccion = null, orden = { k: 'hechos7d', dir: -1 }, primera = true;
+let datos = null, medida = 'hechos7d', seleccion = null, orden = { k: 'hechos7d', dir: -1 }, primera = true, espera = false;
 const QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // --- Datos -----------------------------------------------------------------
@@ -516,6 +516,14 @@ async function cargar() {
   } catch (e) {
     if (!datos) { $('vivo').className = 'vivo mal'; $('vivo-t').textContent = 'No se pudieron cargar los datos'; }
   }
+}
+
+// El snapshot sin cifras, para la espera: mismos departamentos, todo en cero.
+function enEspera(d) {
+  const cero = { hechos7d: 0, hechos24h: 0, hechos24hAnterior: 0, corroborados7d: 0 };
+  return { ...d,
+    totales: { ...cero, sinDepartamento7d: 0 },
+    departamentos: d.departamentos.map(x => ({ ...x, ...cero, temaPrincipal: null })) };
 }
 
 // Solo para revisar el diseño con ?demo. Nunca es la vista por defecto.
@@ -542,6 +550,14 @@ function datosDeEjemplo() {
 // --- Pintar ----------------------------------------------------------------
 
 function pintar(d) {
+  // Sin historias, el snapshot cuenta notas y no hechos (un suceso con 89
+  // notas pesaría 89). Mientras Historias no llegue a la semana, las cifras
+  // se tapan: es mejor un panel en espera que uno inflado con la marca de M+.
+  // Etapa30 manda historiasAlDia; los snapshots viejos no lo traen y se
+  // muestran como siempre.
+  const consolidando = d.salud && d.salud.historiasAlDia === false;
+  espera = consolidando;
+  if (consolidando) d = enEspera(d);
   datos = d;
   datos.deps = d.departamentos.map(x => ({ ...x, cambio: x.hechos24h - x.hechos24hAnterior }));
   const t = d.totales, vacio = t.hechos7d === 0;
@@ -559,9 +575,20 @@ function pintar(d) {
   contar($('c-sin'), t.sinDepartamento7d);
 
   $('velo').hidden = !vacio;
-  if (vacio) $('velo-t').textContent = d.salud && d.salud.clasificadoHasta
-    ? 'Notas procesadas hasta el ' + fecha(d.salud.clasificadoHasta) + '. El mapa se llena solo cuando llegue a hoy.'
-    : 'El mapa se llena solo en cuanto haya hechos de la semana.';
+  if (consolidando) {
+    $('velo-tit').textContent = 'Agrupando las notas en hechos';
+    $('velo-t').textContent = 'Diez notas del mismo suceso son un hecho, no diez. Las cifras salen cuando el análisis llegue a esta semana' +
+      (d.salud.historiasHasta ? ' (va por el ' + fecha(d.salud.historiasHasta) + ').' : '.');
+    ['c-7d', 'c-24', 'c-cor', 'c-sin'].forEach(id => { $(id).textContent = '—'; });
+    $('c-7d-n').textContent = 'en cuanto las notas queden agrupadas en hechos';
+    $('c-24-n').innerHTML = '&nbsp;';
+    $('c-cor-n').textContent = 'cubiertos por dos medios o más';
+  } else if (vacio) {
+    $('velo-tit').textContent = 'Los datos se están poniendo al día';
+    $('velo-t').textContent = d.salud && d.salud.clasificadoHasta
+      ? 'Notas procesadas hasta el ' + fecha(d.salud.clasificadoHasta) + '. El mapa se llena solo cuando llegue a hoy.'
+      : 'El mapa se llena solo en cuanto haya hechos de la semana.';
+  }
 
   if (!seleccion || !datos.deps.find(x => x.nombre === seleccion)) {
     const top = [...datos.deps].sort((a, b) => b.hechos7d - a.hechos7d)[0];
@@ -603,7 +630,8 @@ function pintarEstado(d, vacio) {
   const gen = new Date(d.generado), horas = (Date.now() - gen) / 36e5;
   const viejo = horas > CONFIG.HORAS_VIEJO, alDia = d.salud && d.salud.datosAlDia && !viejo;
   $('vivo').className = 'vivo' + (alDia ? '' : ' aviso');
-  $('vivo-t').innerHTML = (alDia ? 'En vivo' : viejo ? 'Actualización detenida' : 'Poniéndose al día') +
+  const agrupando = d.salud && d.salud.historiasAlDia === false;
+  $('vivo-t').innerHTML = (alDia ? 'En vivo' : viejo ? 'Actualización detenida' : agrupando ? 'Agrupando en hechos' : 'Poniéndose al día') +
     '<span class="txt-largo"> · ' + hace(gen) + '</span>';
   $('vivo').title = alDia ? 'Datos al día' : vacio ? 'Los conteos todavía no llegan a hoy' : 'Las cifras pueden estar incompletas';
 }
@@ -658,7 +686,7 @@ function pintarMapa() {
   if (esc.max > 0) html += '<span class="esc">' + esc.cortes.map(c => '<span class="sw" style="background:' + esc.color(c) + '"></span>').join('') +
     '</span><span>de 1 a ' + fmt.format(esc.max) + ' ' + MEDIDAS[medida].largo + '</span>';
   if ($('pings').childElementCount) html += '<span class="ping-ley"><i></i>más hechos en las últimas 24 h</span>';
-  $('leyenda').innerHTML = html;
+  $('leyenda').innerHTML = espera ? '' : html;   // en espera no hay nada que leer en la escala
 }
 
 // Tres pings como máximo: más, y el mapa parece una alarma.
@@ -694,18 +722,20 @@ function pintarDetalle() {
   const d = datos.deps.find(x => x.nombre === seleccion) || { nombre: seleccion };
   const max = Math.max(1, d.hechos24h || 0, d.hechos24hAnterior || 0);
   const anchoB = v => Math.round(100 * (v || 0) / max) + '%';
+  const n = v => espera ? '—' : fmt.format(v || 0);
   $('detalle').innerHTML =
     '<p class="t-sub" style="margin:0 0 4px">Departamento elegido</p>' +
     '<h2 class="nombre">' + d.nombre + '</h2>' +
-    (d.temaPrincipal ? '<span class="tema">' + TEMAS[d.temaPrincipal] + '</span>' : '<span class="tema no">Sin hechos en la semana</span>') +
-    '<div class="grande"><b class="num">' + fmt.format(d.hechos7d || 0) + '</b><span>hechos en 7 días</span></div>' +
+    (espera ? '<span class="tema no">Cifras en espera</span>'
+     : d.temaPrincipal ? '<span class="tema">' + TEMAS[d.temaPrincipal] + '</span>' : '<span class="tema no">Sin hechos en la semana</span>') +
+    '<div class="grande"><b class="num">' + (espera ? '—' : fmt.format(d.hechos7d || 0)) + '</b><span>hechos en 7 días</span></div>' +
     '<div class="comp">' +
-      '<span>24 h anteriores</span><span><span class="b ant" style="display:block;width:' + anchoB(d.hechos24hAnterior) + '"></span></span><b class="num">' + fmt.format(d.hechos24hAnterior || 0) + '</b>' +
-      '<span>Últimas 24 h</span><span><span class="b" style="display:block;width:' + anchoB(d.hechos24h) + '"></span></span><b class="num">' + fmt.format(d.hechos24h || 0) + '</b>' +
+      '<span>24 h anteriores</span><span><span class="b ant" style="display:block;width:' + anchoB(d.hechos24hAnterior) + '"></span></span><b class="num">' + n(d.hechos24hAnterior) + '</b>' +
+      '<span>Últimas 24 h</span><span><span class="b" style="display:block;width:' + anchoB(d.hechos24h) + '"></span></span><b class="num">' + n(d.hechos24h) + '</b>' +
     '</div>' +
     '<div class="sep"></div>' +
     '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--tinta2)"><span>Corroborados por dos medios o más</span><b class="num" style="color:var(--tinta)">' +
-      fmt.format(d.corroborados7d || 0) + (d.hechos7d ? ' · ' + pct(d.corroborados7d, d.hechos7d) : '') + '</b></div>' +
+      n(d.corroborados7d) + (d.hechos7d ? ' · ' + pct(d.corroborados7d, d.hechos7d) : '') + '</b></div>' +
     '<div class="meter"><i style="width:' + (d.hechos7d ? Math.round(100 * d.corroborados7d / d.hechos7d) : 0) + '%"></i></div>';
 }
 
@@ -755,8 +785,9 @@ function pintarCambios() {
     '</span>' + chipCambio(d.cambio) + '</div>';
   const suben = datos.deps.filter(d => d.cambio > 0).sort((a, b) => b.cambio - a.cambio).slice(0, 5);
   const bajan = datos.deps.filter(d => d.cambio < 0).sort((a, b) => a.cambio - b.cambio).slice(0, 5);
-  $('suben').innerHTML = suben.length ? suben.map(fila).join('') : '<p class="vacio">Ninguno sube.</p>';
-  $('bajan').innerHTML = bajan.length ? bajan.map(fila).join('') : '<p class="vacio">Ninguno baja.</p>';
+  const nada = espera ? 'Aparece cuando las notas queden agrupadas en hechos.' : null;
+  $('suben').innerHTML = suben.length ? suben.map(fila).join('') : '<p class="vacio">' + (nada || 'Ninguno sube.') + '</p>';
+  $('bajan').innerHTML = bajan.length ? bajan.map(fila).join('') : '<p class="vacio">' + (nada || 'Ninguno baja.') + '</p>';
   document.querySelectorAll('.fila-c').forEach(f => f.addEventListener('click', () => elegir(f.dataset.n)));
 }
 
@@ -766,6 +797,10 @@ function pintarTabla() {
     if (orden.k === 'nombre' || orden.k === 'temaPrincipal') return orden.dir * String(va || '').localeCompare(String(vb || ''), 'es');
     return orden.dir * ((va || 0) - (vb || 0)) || a.nombre.localeCompare(b.nombre, 'es');
   });
+  if (espera) {
+    document.querySelector('#tabla tbody').innerHTML = '<tr><td colspan="6" class="izq" style="color:var(--tinta3);white-space:normal">Las cifras por departamento salen cuando las notas queden agrupadas en hechos.</td></tr>';
+    return;
+  }
   document.querySelector('#tabla tbody').innerHTML = filas.map(d =>
     '<tr data-n="' + d.nombre + '"' + (d.nombre === seleccion ? ' class="sel"' : '') + '><td>' + d.nombre + '</td>' +
     '<td class="num">' + fmt.format(d.hechos7d) + '</td><td class="num">' + fmt.format(d.hechos24h) + '</td>' +
