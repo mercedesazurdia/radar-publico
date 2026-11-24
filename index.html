@@ -550,7 +550,7 @@ function pintar(d) {
   // Las cifras cuentan desde cero solo la primera vez; en las recargas de
   // cada 10 min saltar de 0 a 254 otra vez distraería.
   contar($('c-7d'), t.hechos7d);
-  $('c-7d-n').innerHTML = vacio ? 'todavía sin datos de la semana' : 'en los 22 departamentos y sin ubicar';
+  $('c-7d-n').innerHTML = vacio ? 'todavía sin datos de la semana' : 'ubicados en un departamento; los que no, van aparte';
   contar($('c-24'), t.hechos24h);
   $('c-24-n').innerHTML = vacio ? '&nbsp;' : chipCambio(t.hechos24h - t.hechos24hAnterior) + '<span>contra las 24 h anteriores (' + fmt.format(t.hechos24hAnterior) + ')</span>';
   contar($('c-cor'), t.corroborados7d);
