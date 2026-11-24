@@ -13,3 +13,10 @@ lleva claves ni toca la base.
 - Mapa: límites departamentales de Natural Earth (dominio público).
 
 Para cambiar el correo o el WhatsApp: bloque `CONFIG` al inicio del script.
+
+SEO y vista previa al compartir:
+- `og.jpg` (1200×630): imagen fija de marca para WhatsApp, LinkedIn, X y
+  Facebook. No lleva cifras: cambian cada hora.
+- `robots.txt` y `sitemap.xml` para buscadores; `llms.txt` describe el panel
+  y sus datos para asistentes de IA.
+- Datos estructurados (Organization, WebSite, Dataset) en el `<head>`.

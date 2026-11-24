@@ -1,0 +1,21 @@
+# Radar Público
+
+> Mapa en vivo de Guatemala, de M+ Intelligence (M+ Corp). Cuenta los hechos de seguridad y violencia; conflictividad, protestas y bloqueos; desastres, clima y emergencias; y servicios públicos (salud, educación, agua y carreteras) en cada uno de los 22 departamentos. Se actualiza cada hora.
+
+## Cómo se mide
+
+- Un hecho es una historia: las notas que cuentan lo mismo se agrupan, y diez medios cubriendo el mismo bloqueo suman un hecho, no diez.
+- Corroborado: un hecho cubierto por dos medios distintos o más. Los medios del Estado no cuentan para corroborar.
+- Solo entran hechos consumados. Anuncios, convocatorias o amenazas no suman hasta que ocurren.
+- Cada hecho se ubica donde ocurrió; lo que no se puede ubicar con certeza se cuenta aparte, como "sin departamento".
+- No califica a nadie ni mide opinión. Un departamento con poca prensa local puede tener más de lo que se ve.
+- Fuentes: prensa nacional y regional, y cuentas de medios e instituciones en redes, leídas y clasificadas por Radar M+.
+
+## Datos
+
+- [snapshot.json](https://cqdvccjpwwyesvoumyjd.supabase.co/storage/v1/object/public/radar-publico/snapshot.json): los conteos vigentes. Campos por departamento: hechos7d, hechos24h, hechos24hAnterior, corroborados7d, temaPrincipal. Incluye totales, fecha de generación y si los datos están al día.
+
+## M+ Corp
+
+- [Radar M+](https://mpluscorp.com/inteligencia/): el monitoreo de prensa y redes para organizaciones, del que sale este panel.
+- Contacto: info@mpluscorp.com · WhatsApp +502 4486 3514

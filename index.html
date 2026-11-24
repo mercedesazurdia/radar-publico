@@ -1,14 +1,53 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-GT">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radar Público · Guatemala en vivo, departamento por departamento</title>
-<meta name="description" content="Hechos de seguridad, conflictividad, desastres y servicios públicos en Guatemala, contados por departamento y actualizados cada hora. Un panel abierto de M+ Intelligence.">
-<meta property="og:title" content="Radar Público · Guatemala en vivo">
-<meta property="og:description" content="Qué está pasando en cada departamento: hechos, no notas. Actualizado cada hora.">
+<title>Guatemala hoy: hechos por departamento | Radar Público M+</title>
+<meta name="description" content="Mapa en vivo de Guatemala: hechos de seguridad, bloqueos y protestas, desastres y servicios públicos por departamento. Hechos, no notas. Cada hora.">
+<link rel="canonical" href="https://radar.mpluscorp.com/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<!-- Vista previa al compartir (WhatsApp, LinkedIn, X, Facebook). La imagen
+     es fija, de marca: las cifras cambian cada hora y una tarjeta con
+     números viejos en un chat diría algo que ya no es cierto. -->
 <meta property="og:type" content="website">
+<meta property="og:locale" content="es_GT">
+<meta property="og:site_name" content="Radar Público · M+ Intelligence">
+<meta property="og:url" content="https://radar.mpluscorp.com/">
+<meta property="og:title" content="Qué está pasando en cada departamento de Guatemala">
+<meta property="og:description" content="Seguridad, conflictividad, desastres y servicios públicos, contados como hechos y no como notas. Se actualiza cada hora.">
+<meta property="og:image" content="https://radar.mpluscorp.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mapa de Guatemala por departamento con el título Qué está pasando en cada departamento">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Qué está pasando en cada departamento de Guatemala">
+<meta name="twitter:description" content="Hechos, no notas. Mapa en vivo de M+ Intelligence, actualizado cada hora.">
+<meta name="twitter:image" content="https://radar.mpluscorp.com/og.jpg">
+<!-- Datos estructurados: quién publica (M+ Corp), el sitio y el conjunto de
+     datos abierto. Dataset hace que snapshot.json pueda aparecer en Google
+     Dataset Search y que los asistentes de IA entiendan qué mide y de dónde
+     sale. Sin licencia declarada a propósito: es decisión de Mercedes. -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://mpluscorp.com/#org","name":"M+ Corp","url":"https://mpluscorp.com/",
+  "email":"info@mpluscorp.com","telephone":"+502 4486 3514","areaServed":"GT",
+  "brand":{"@type":"Brand","name":"M+ Intelligence"}},
+ {"@type":"WebSite","@id":"https://radar.mpluscorp.com/#web","url":"https://radar.mpluscorp.com/","name":"Radar Público",
+  "inLanguage":"es-GT","publisher":{"@id":"https://mpluscorp.com/#org"}},
+ {"@type":"Dataset","name":"Radar Público: hechos por departamento en Guatemala",
+  "description":"Conteo de hechos de seguridad y violencia, conflictividad, protestas y bloqueos, desastres y emergencias, y servicios públicos en los 22 departamentos de Guatemala, en ventanas de 7 días y de 24 horas. Un hecho es una historia con cobertura en prensa o redes; corroborado es un hecho cubierto por dos medios distintos o más. Se actualiza cada hora.",
+  "url":"https://radar.mpluscorp.com/","isAccessibleForFree":true,"inLanguage":"es",
+  "keywords":["Guatemala","conflictividad","bloqueos","seguridad","desastres","servicios públicos","departamentos","monitoreo de medios"],
+  "spatialCoverage":{"@type":"Place","name":"Guatemala","geo":{"@type":"GeoShape","box":"13.7 -92.3 17.9 -88.2"}},
+  "measurementTechnique":"Clasificación automática de prensa nacional y regional y de cuentas de medios e instituciones en redes; agrupación de notas en historias; un hecho por historia.",
+  "creator":{"@id":"https://mpluscorp.com/#org"},"publisher":{"@id":"https://mpluscorp.com/#org"},
+  "distribution":[{"@type":"DataDownload","encodingFormat":"application/json",
+   "contentUrl":"https://cqdvccjpwwyesvoumyjd.supabase.co/storage/v1/object/public/radar-publico/snapshot.json"}]}
+]}
+</script>
 <meta name="theme-color" content="#1E1155">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Descripción para asistentes de IA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23008BFE'/%3E%3Cstop offset='1' stop-color='%23BF2AF6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3EM+%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -274,6 +313,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
 </header>
 
 <main class="cont">
+  <noscript><div class="demo">Este panel necesita JavaScript para mostrar las cifras. Los datos están abiertos en <a href="https://cqdvccjpwwyesvoumyjd.supabase.co/storage/v1/object/public/radar-publico/snapshot.json">snapshot.json</a>.</div></noscript>
   <div id="demo" class="demo" hidden>DATOS DE EJEMPLO. Esta vista sirve para revisar el diseño: las cifras no son reales.</div>
 
   <div class="head">
@@ -391,10 +431,13 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
 <footer class="cierre" id="contacto">
   <div class="cierre-in">
     <div>
-      <h2>Esto es Guatemala entera. El Radar de M+ lo hace para una organización.</h2>
+      <h2>Esto es Guatemala entera. Radar M+ lo hace para una organización.</h2>
       <p>Sigue los temas, los voceros y la competencia de cada organización, todos los días, y señala dónde hay espacio para hablar.</p>
     </div>
     <div class="contacto">
+      <a href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l6-4"/><circle cx="12" cy="12" r="1.5"/></svg>
+        <span>Conocer Radar M+<small>mpluscorp.com/inteligencia</small></span></a>
       <a id="b-wa" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 01-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1120 11.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/></svg>
         <span>Escribir por WhatsApp<small id="wa-t"></small></span></a>
@@ -404,7 +447,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
     </div>
   </div>
   <div class="legal">
-    <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com">mpluscorp.com</a></span>
+    <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel">mpluscorp.com</a></span>
     <span>Datos abiertos: <a id="b-json" href="#">snapshot.json</a> · <span id="pie-gen"></span></span>
   </div>
 </footer>
