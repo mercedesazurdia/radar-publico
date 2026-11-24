@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar Público · Guatemala en vivo, departamento por departamento</title>
+<meta name="description" content="Hechos de seguridad, conflictividad, desastres y servicios públicos en Guatemala, contados por departamento y actualizados cada hora. Un panel abierto de M+ Intelligence.">
+<meta property="og:title" content="Radar Público · Guatemala en vivo">
+<meta property="og:description" content="Qué está pasando en cada departamento: hechos, no notas. Actualizado cada hora.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E1155">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23008BFE'/%3E%3Cstop offset='1' stop-color='%23BF2AF6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='21.5' font-family='Arial' font-weight='700' font-size='14' fill='white' text-anchor='middle'%3EM+%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Producto web, no informe: barra superior fija, tarjetas en grilla y el mapa
+   como pieza central. Marca de M+ (índigo, azul, magenta; Poppins), pero con
+   lenguaje de dashboard. El color con significado es uno solo: la escala azul
+   de cantidad (mapa y barras). El magenta es solo marca, nunca dato. */
+:root{
+  --indigo:#1E1155;--indigo2:#2A1D6E;--azul:#008BFE;--azul-osc:#0068C9;--magenta:#BF2AF6;
+  --tinta:#1D1A33;--tinta2:#5B5775;--tinta3:#8E8AA6;--linea:#E6E3F0;--linea2:#F0EEF6;
+  --fondo:#F5F4FA;--tarjeta:#FFFFFF;
+  --dato:#008BFE;--dato-suave:#BFE0FF;
+  --r:16px;--sombra:0 1px 2px rgba(30,17,85,.04),0 8px 24px rgba(30,17,85,.06);
+}
+*{box-sizing:border-box;}
+[hidden]{display:none!important;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px;}
+body{margin:0;background:var(--fondo);color:var(--tinta);
+  font-family:Poppins,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.55;}
+a{color:var(--azul-osc);}
+button{font:inherit;}
+.num{font-variant-numeric:tabular-nums;}
+
+/* --- Barra superior --- */
+.barra{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.6) blur(14px);
+  -webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--linea);}
+.barra-in{max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:28px;}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tinta);flex:none;}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--azul),var(--magenta));
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:-.3px;
+  box-shadow:0 4px 12px rgba(127,60,250,.28);}
+.marca b{display:block;font-size:15px;font-weight:600;line-height:1.1;}
+.marca small{display:block;font-size:11px;color:var(--tinta3);line-height:1.2;}
+.nav{display:flex;gap:4px;}
+.nav a{color:var(--tinta2);text-decoration:none;font-size:13.5px;padding:7px 12px;border-radius:8px;}
+.nav a:hover{background:var(--linea2);color:var(--tinta);}
+.barra .der{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.vivo{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tinta2);padding:6px 12px;
+  border:1px solid var(--linea);border-radius:999px;background:#fff;white-space:nowrap;}
+.vivo .p{width:8px;height:8px;border-radius:50%;background:#1F9D6B;position:relative;flex:none;}
+.vivo .p::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #1F9D6B;opacity:0;animation:pulso 2.2s infinite;}
+.vivo.aviso .p{background:#E2B04A;} .vivo.aviso .p::after{border-color:#E2B04A;}
+.vivo.mal .p{background:#E04A3A;} .vivo.mal .p::after{display:none;}
+@keyframes pulso{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.vivo .p::after{animation:none;}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;font-size:13.5px;font-weight:500;
+  text-decoration:none;border:0;cursor:pointer;white-space:nowrap;}
+.btn.pri{background:var(--indigo);color:#fff;}
+.btn.pri:hover{background:var(--indigo2);}
+
+/* --- Contenedor --- */
+.cont{max-width:1280px;margin:0 auto;padding:28px 24px 0;}
+.demo{margin:0 0 18px;padding:10px 14px;border-radius:10px;background:#FDEEEC;color:#8E2A1C;font-size:13px;font-weight:500;border:1px solid #F3C4BC;}
+
+/* --- Encabezado --- */
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--azul-osc);
+  background:#EAF4FF;padding:4px 10px;border-radius:999px;margin-bottom:10px;}
+.head h1{margin:0;font-size:34px;line-height:1.15;letter-spacing:-.8px;font-weight:600;max-width:720px;}
+.head h1 em{font-style:normal;background:linear-gradient(90deg,var(--azul),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.head p{margin:8px 0 0;color:var(--tinta2);font-size:15px;max-width:640px;}
+.seg{display:inline-flex;background:#fff;border:1px solid var(--linea);border-radius:12px;padding:4px;box-shadow:var(--sombra);}
+.seg button{border:0;background:transparent;color:var(--tinta2);font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap;}
+.seg button[aria-pressed="true"]{background:var(--indigo);color:#fff;font-weight:500;}
+.seg button:focus-visible,.depto:focus-visible,a:focus-visible,.btn:focus-visible{outline:2px solid var(--azul);outline-offset:2px;}
+.seg-et{display:block;font-size:11px;color:var(--tinta3);margin:0 0 6px 4px;letter-spacing:.4px;}
+
+/* --- Grilla de tarjetas --- */
+.grilla{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;}
+.t{background:var(--tarjeta);border:1px solid var(--linea);border-radius:var(--r);box-shadow:var(--sombra);padding:20px;min-width:0;}
+.t h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-.1px;}
+.t .t-sub{margin:2px 0 0;font-size:12.5px;color:var(--tinta3);}
+.t-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.col{display:flex;flex-direction:column;gap:16px;}
+
+/* Cifras */
+.kpi{display:flex;flex-direction:column;gap:6px;}
+.kpi .et{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tinta2);font-weight:500;}
+.kpi .ic{width:28px;height:28px;border-radius:8px;background:#EAF4FF;display:grid;place-items:center;flex:none;}
+.kpi .ic svg{width:15px;height:15px;stroke:var(--azul-osc);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.kpi .v{font-size:34px;font-weight:600;letter-spacing:-1px;line-height:1.1;margin-top:6px;}
+.kpi .pie{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tinta3);flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;
+  background:var(--linea2);color:var(--tinta);}
+.meter{height:6px;border-radius:999px;background:var(--linea2);overflow:hidden;margin-top:4px;}
+.meter i{display:block;height:100%;border-radius:999px;background:var(--dato);}
+
+/* Mapa: tarjeta oscura, la pieza central */
+.t-mapa{background:radial-gradient(120% 90% at 20% 0%,#2C1F78 0%,var(--indigo) 55%,#160C42 100%);border-color:#2A1D6E;color:#fff;
+  position:relative;overflow:hidden;padding:22px;}
+.t-mapa h2{color:#fff;}
+.t-mapa .t-head,.t-mapa .leyenda{position:relative;z-index:1;}
+.t-mapa .t-sub{color:#A79FD6;}
+.mapa-caja{position:relative;}
+#mapa{width:100%;max-height:620px;height:auto;display:block;margin:0 auto;}
+.depto{stroke:#160C42;stroke-width:1;cursor:pointer;transition:fill .35s,opacity .2s;}
+.depto:hover{stroke:#fff;stroke-width:1.4;}
+.depto.sel{stroke:#fff;stroke-width:2.2;}
+.leyenda{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:12px;color:#C9C4E4;margin-top:10px;}
+.leyenda .esc{display:flex;gap:2px;}
+.leyenda .sw{width:22px;height:8px;border-radius:2px;display:inline-block;}
+.velo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.velo div{background:rgba(22,12,66,.88);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 20px;max-width:320px;
+  text-align:center;font-size:13.5px;color:#C9C4E4;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.velo strong{display:block;color:#fff;font-size:15px;font-weight:600;margin-bottom:4px;}
+.marca-agua{position:absolute;right:22px;top:24px;font-size:11px;color:#6F66A8;letter-spacing:.3px;}
+
+/* Ficha del departamento */
+.ficha-d .nombre{font-size:24px;font-weight:600;letter-spacing:-.5px;line-height:1.15;margin:0;}
+.ficha-d .tema{display:inline-flex;margin-top:8px;font-size:12px;font-weight:500;color:var(--azul-osc);background:#EAF4FF;
+  padding:3px 10px;border-radius:999px;}
+.ficha-d .tema.no{color:var(--tinta3);background:var(--linea2);}
+.ficha-d .grande{display:flex;align-items:baseline;gap:8px;margin:18px 0 4px;}
+.ficha-d .grande b{font-size:44px;font-weight:600;letter-spacing:-1.4px;line-height:1;}
+.ficha-d .grande span{color:var(--tinta2);font-size:13px;}
+.comp{display:grid;grid-template-columns:auto 1fr auto;gap:8px 10px;align-items:center;margin-top:16px;font-size:12.5px;color:var(--tinta2);}
+.comp .b{height:10px;border-radius:0 4px 4px 0;background:var(--dato);min-width:2px;}
+.comp .b.ant{background:var(--dato-suave);}
+.comp b{color:var(--tinta);font-weight:600;}
+.sep{height:1px;background:var(--linea);margin:16px 0;}
+
+/* Barras (temas y ranking) */
+.barras{display:flex;flex-direction:column;gap:10px;}
+.fila-b{display:grid;grid-template-columns:minmax(0,150px) 1fr 44px;gap:12px;align-items:center;font-size:13px;}
+.fila-b .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tinta);}
+.fila-b .pista{height:12px;display:flex;gap:2px;}
+.fila-b .seg1{background:var(--dato);border-radius:0;height:100%;}
+.fila-b .seg2{background:var(--dato-suave);height:100%;border-radius:0 4px 4px 0;}
+.fila-b .seg1:last-child{border-radius:0 4px 4px 0;}
+.fila-b .v{text-align:right;font-weight:600;}
+.fila-b.click{cursor:pointer;border-radius:6px;}
+.fila-b.click:hover .n{color:var(--azul-osc);}
+/* Temas: nombre y cifra arriba, barra a todo el ancho debajo; en la columna
+   angosta los nombres no caben al lado de la barra. */
+.barras.temas .fila-b{grid-template-columns:1fr auto;row-gap:5px;}
+.barras.temas .fila-b .pista{grid-column:1 / -1;grid-row:2;height:8px;}
+.ley-b{display:flex;gap:14px;font-size:12px;color:var(--tinta2);}
+.ley-b i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;}
+
+/* Cambios */
+.cambios{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.cambios h3{margin:0 0 6px;font-size:12px;font-weight:500;color:var(--tinta3);text-transform:uppercase;letter-spacing:1px;}
+.fila-c{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--linea2);font-size:13.5px;cursor:pointer;}
+.fila-c:last-child{border-bottom:0;}
+.fila-c .de{color:var(--tinta3);font-size:12px;margin-left:auto;}
+.vacio{color:var(--tinta3);font-size:13px;margin:0;padding:8px 0;}
+
+/* Tabla */
+details.t{padding:0;}
+details.t summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+details.t summary::-webkit-details-marker{display:none;}
+details.t summary .flecha{transition:transform .2s;color:var(--tinta3);}
+details[open].t summary .flecha{transform:rotate(180deg);}
+.tabla-caja{overflow-x:auto;padding:0 20px 18px;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{font-size:11.5px;color:var(--tinta3);font-weight:500;text-align:right;padding:10px 12px;border-bottom:1px solid var(--linea);white-space:nowrap;}
+th:first-child,td:first-child,.izq{text-align:left;}
+th button{background:none;border:0;padding:0;color:inherit;cursor:pointer;}
+th[aria-sort] button{color:var(--indigo);font-weight:600;}
+td{padding:10px 12px;border-bottom:1px solid var(--linea2);text-align:right;white-space:nowrap;}
+tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{background:#F1F7FF;}
+
+/* Metodología */
+.metodo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 22px;}
+.metodo .m{font-size:13px;color:var(--tinta2);}
+.metodo .m b{display:flex;align-items:center;gap:8px;color:var(--tinta);font-weight:600;font-size:13.5px;margin-bottom:4px;}
+.metodo .m b i{width:22px;height:22px;border-radius:6px;background:#EAF4FF;color:var(--azul-osc);display:grid;place-items:center;
+  font-style:normal;font-size:11px;font-weight:700;flex:none;}
+.lead{font-size:17px;line-height:1.5;color:var(--tinta);margin:0 0 20px;max-width:820px;font-weight:500;letter-spacing:-.2px;}
+
+/* Cierre */
+.cierre{margin:40px 0 0;background:var(--indigo);color:#fff;position:relative;overflow:hidden;}
+.cierre::before{content:"";position:absolute;inset:auto -10% -60% 40%;height:140%;background:radial-gradient(closest-side,rgba(191,42,246,.35),transparent);}
+.cierre::after{content:"";position:absolute;inset:-60% 50% auto -10%;height:140%;background:radial-gradient(closest-side,rgba(0,139,254,.30),transparent);}
+.cierre-in{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:48px 24px 28px;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center;}
+.cierre h2{margin:0 0 10px;font-size:28px;line-height:1.2;letter-spacing:-.6px;font-weight:600;}
+.cierre p{margin:0;color:#C9C4E4;font-size:15px;max-width:560px;}
+.contacto{display:flex;flex-direction:column;gap:10px;}
+.contacto a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.14);color:#fff;text-decoration:none;font-size:14px;transition:background .15s;}
+.contacto a:hover{background:rgba(255,255,255,.13);}
+.contacto a small{display:block;color:#A79FD6;font-size:12px;}
+.contacto svg{width:20px;height:20px;flex:none;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.legal{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:18px 24px 26px;border-top:1px solid rgba(255,255,255,.1);
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:12px;color:#8C84C4;}
+.legal a{color:#C9C4E4;}
+
+/* Tooltip compartido */
+.tip{position:fixed;pointer-events:none;background:#fff;color:var(--tinta);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.45;
+  box-shadow:0 10px 30px rgba(22,12,66,.28);border:1px solid var(--linea);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:50;}
+.tip b{font-weight:600;font-size:13px;}
+.tip .t2{color:var(--tinta3);}
+
+@media (max-width:1080px){
+  .s3{grid-column:span 6}.s4,.s5,.s7,.s8{grid-column:span 12}
+  .col{display:grid;grid-template-columns:1fr 1fr;}
+  .metodo{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .nav{display:none;}
+}
+@media (max-width:700px){
+  .barra-in{padding:0 16px;gap:12px;} .cont{padding:20px 16px 0;}
+  .marca small{display:none;} .vivo .txt-largo{display:none;}
+  .barra .btn{display:none;}
+  .head h1{font-size:26px;}
+  .col,.cambios,.metodo,.cierre-in{grid-template-columns:1fr;}
+  .kpi .v{font-size:28px;}
+  .t{padding:16px;} .t-mapa{padding:16px;}
+  .fila-b{grid-template-columns:minmax(0,110px) 1fr 36px;}
+  .seg{width:100%;} .seg button{flex:1;padding:8px 6px;}
+  .head > div:last-child{width:100%;}
+}
+@media (max-width:420px){ .grilla{gap:12px;} .kpi .v{font-size:26px;} .kpi .pie{font-size:11.5px;} .kpi .et{font-size:12px;} }
+.mapa-caja svg{position:relative;z-index:1;}
+
+/* --- Animación ---
+   El barrido de radar es la firma del producto: una línea de luz que gira
+   sobre el mapa cada 8 s y aclara los departamentos al pasar (blend screen).
+   Los pings marcan los tres departamentos con más hechos en las últimas 24 h:
+   "aquí está pasando algo ahora". Todo se apaga con prefers-reduced-motion. */
+.barrido{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;border-radius:inherit;}
+.barrido::before{content:"";position:absolute;left:50%;top:56%;width:150%;aspect-ratio:1;translate:-50% -50%;
+  background:conic-gradient(from 0deg,transparent 0deg 290deg,rgba(0,139,254,.06) 320deg,rgba(78,167,255,.22) 352deg,rgba(201,230,255,.55) 359.5deg,transparent 360deg);
+  mix-blend-mode:screen;animation:barrer 8s linear infinite;border-radius:50%;}
+@keyframes barrer{to{rotate:360deg}}
+.anillos{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:repeating-radial-gradient(circle at 50% 56%,transparent 0 79px,rgba(255,255,255,.045) 79px 80px);}
+.ping circle{fill:none;stroke:#A9D5FF;stroke-width:1.6;transform-box:fill-box;transform-origin:center;animation:ping 2.4s ease-out infinite;}
+.ping circle.c2{animation-delay:1.2s;}
+.ping .nucleo{fill:#fff;stroke:none;animation:none;}
+@keyframes ping{0%{transform:scale(.3);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+.depto{opacity:0;}
+.mapa-listo .depto{opacity:1;transition:fill .35s,opacity .6s ease-out;transition-delay:0s,var(--d,0s);}
+.pista span{transition:width .9s cubic-bezier(.2,.8,.2,1);}
+.meter i,.comp .b{transition:width .9s cubic-bezier(.2,.8,.2,1);}
+.leyenda .ping-ley{display:inline-flex;align-items:center;gap:6px;}
+.leyenda .ping-ley i{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(169,213,255,.35);}
+@media (prefers-reduced-motion:reduce){
+  .barrido::before,.ping circle{animation:none;} .ping circle:not(.nucleo){display:none;}
+  .depto,.mapa-listo .depto{opacity:1;transition:none;} .pista span,.meter i,.comp .b{transition:none;}
+}
+@media print{ .barra{position:static;} .seg,.contacto{display:none;} body{background:#fff;} }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <a class="marca" href="#">
+      <span class="logo" aria-hidden="true">M+</span>
+      <span><b>Radar Público</b><small>por M+ Intelligence</small></span>
+    </a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#mapa-sec">Mapa</a><a href="#ranking-sec">Ranking</a><a href="#tabla-sec">Departamentos</a><a href="#metodo-sec">Cómo se mide</a>
+    </nav>
+    <div class="der">
+      <span class="vivo" id="vivo" role="status" aria-live="polite"><span class="p" aria-hidden="true"></span><span id="vivo-t">Cargando…</span></span>
+      <a class="btn pri" href="#contacto">Contacto</a>
+    </div>
+  </div>
+</header>
+
+<main class="cont">
+  <div id="demo" class="demo" hidden>DATOS DE EJEMPLO. Esta vista sirve para revisar el diseño: las cifras no son reales.</div>
+
+  <div class="head">
+    <div>
+      <span class="kicker">Guatemala · se actualiza cada hora</span>
+      <h1>Qué está pasando en <em>cada departamento</em></h1>
+      <p>Seguridad, conflictividad, desastres y servicios públicos, contados como hechos y no como notas.</p>
+    </div>
+    <div>
+      <span class="seg-et">El mapa y el ranking muestran</span>
+      <div class="seg" role="group" aria-label="Qué miden el mapa y el ranking">
+        <button type="button" data-m="hechos7d" aria-pressed="true">7 días</button>
+        <button type="button" data-m="hechos24h" aria-pressed="false">24 horas</button>
+        <button type="button" data-m="corroborados7d" aria-pressed="false">Corroborados</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grilla">
+    <section class="t s3 kpi" aria-label="Hechos en 7 días">
+      <div class="et"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>Hechos · 7 días</div>
+      <div class="v num" id="c-7d">—</div>
+      <div class="pie" id="c-7d-n">&nbsp;</div>
+    </section>
+    <section class="t s3 kpi" aria-label="Últimas 24 horas">
+      <div class="et"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Últimas 24 horas</div>
+      <div class="v num" id="c-24">—</div>
+      <div class="pie" id="c-24-n">&nbsp;</div>
+    </section>
+    <section class="t s3 kpi" aria-label="Corroborados">
+      <div class="et"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></span>Corroborados</div>
+      <div class="v num" id="c-cor">—</div>
+      <div class="meter" aria-hidden="true"><i id="c-cor-m" style="width:0"></i></div>
+      <div class="pie" id="c-cor-n">&nbsp;</div>
+    </section>
+    <section class="t s3 kpi" aria-label="Sin departamento">
+      <div class="et"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/></svg></span>Sin departamento</div>
+      <div class="v num" id="c-sin">—</div>
+      <div class="pie">no se pueden ubicar con certeza y no entran al mapa</div>
+    </section>
+
+    <section class="t t-mapa s8" id="mapa-sec" aria-label="Mapa">
+      <div class="anillos" aria-hidden="true"></div>
+      <div class="barrido" aria-hidden="true"></div>
+      <div class="t-head">
+        <div><h2>Mapa de hechos</h2><p class="t-sub" id="mapa-sub">Hechos en los últimos 7 días, por departamento</p></div>
+      </div>
+      <div class="mapa-caja">
+        <svg id="mapa" viewBox="0 0 600 633" role="img" aria-label="Mapa de Guatemala por departamento"></svg>
+        <div class="velo" id="velo" hidden><div><strong>Los datos se están poniendo al día</strong><span id="velo-t"></span></div></div>
+      </div>
+      <div class="leyenda" id="leyenda" aria-hidden="true"></div>
+      <span class="marca-agua">radar.mpluscorp.com</span>
+    </section>
+
+    <div class="s4 col">
+      <section class="t ficha-d" id="detalle" aria-live="polite"></section>
+      <section class="t">
+        <div class="t-head"><div><h2>Qué tema domina</h2><p class="t-sub">En cuántos departamentos cada tema es el que más hechos suma</p></div></div>
+        <div class="barras temas" id="temas"></div>
+      </section>
+    </div>
+
+    <section class="t s7" id="ranking-sec">
+      <div class="t-head">
+        <div><h2>Departamentos con más hechos</h2><p class="t-sub" id="rank-sub">Los 10 primeros, últimos 7 días</p></div>
+        <div class="ley-b" id="rank-ley"><span><i style="background:var(--dato)"></i>Corroborados</span><span><i style="background:var(--dato-suave)"></i>Un solo medio</span></div>
+      </div>
+      <div class="barras" id="ranking"></div>
+    </section>
+
+    <section class="t s5">
+      <div class="t-head"><div><h2>Qué cambió en 24 horas</h2><p class="t-sub">Contra las 24 horas anteriores</p></div></div>
+      <div class="cambios">
+        <div><h3>Suben</h3><div id="suben"></div></div>
+        <div><h3>Bajan</h3><div id="bajan"></div></div>
+      </div>
+    </section>
+
+    <details class="t s12" id="tabla-sec">
+      <summary><div><h2>Los 22 departamentos</h2><p class="t-sub">Tabla completa, se ordena por cualquier columna</p></div>
+        <svg class="flecha" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="tabla-caja">
+        <table id="tabla">
+          <thead><tr>
+            <th scope="col" data-k="nombre"><button type="button">Departamento</button></th>
+            <th scope="col" data-k="hechos7d"><button type="button">7 días</button></th>
+            <th scope="col" data-k="hechos24h"><button type="button">24 h</button></th>
+            <th scope="col" data-k="cambio"><button type="button">Cambio</button></th>
+            <th scope="col" data-k="corroborados7d"><button type="button">Corroborados</button></th>
+            <th scope="col" class="izq" data-k="temaPrincipal"><button type="button">Tema principal</button></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </details>
+
+    <section class="t s12" id="metodo-sec">
+      <div class="t-head"><div><h2>Cómo se mide</h2></div></div>
+      <p class="lead">Si diez medios cubren el mismo bloqueo, es un hecho. Si un medio publica cuatro notas de lo mismo, sigue siendo uno.</p>
+      <div class="metodo">
+        <div class="m"><b><i>1</i>Un hecho</b>Las notas que cuentan lo mismo se agrupan en una historia, y cada historia es un hecho. Una nota sin otras parecidas también cuenta como uno.</div>
+        <div class="m"><b><i>2</i>Corroborado</b>Un hecho cubierto por dos medios distintos o más. Los medios del Estado no cuentan para corroborar.</div>
+        <div class="m"><b><i>3</i>Solo lo que ya pasó</b>Entran los hechos consumados. Un anuncio, una convocatoria o una amenaza no suman hasta que ocurren.</div>
+        <div class="m"><b><i>4</i>Dónde</b>Cada hecho se ubica donde ocurrió. Lo que no se puede ubicar con certeza se cuenta aparte.</div>
+        <div class="m"><b><i>5</i>Qué temas</b>Seguridad y hechos de violencia; conflictividad, protestas y bloqueos; desastres, clima y emergencias; servicios públicos: salud, educación, agua y carreteras.</div>
+        <div class="m"><b><i>6</i>Qué no mide</b>No califica a nadie ni mide opinión. Un departamento con poca prensa local puede tener más de lo que se ve.</div>
+        <div class="m"><b><i>7</i>De dónde sale</b>Prensa nacional y regional, y cuentas de medios e instituciones en redes, que el Radar de M+ Intelligence lee y clasifica cada hora.</div>
+        <div class="m"><b><i>8</i>El mapa</b>Límites departamentales de Natural Earth (dominio público), simplificados para la web.</div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="cierre" id="contacto">
+  <div class="cierre-in">
+    <div>
+      <h2>Esto es Guatemala entera. El Radar de M+ lo hace para una organización.</h2>
+      <p>Sigue los temas, los voceros y la competencia de cada organización, todos los días, y señala dónde hay espacio para hablar.</p>
+    </div>
+    <div class="contacto">
+      <a id="b-wa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 01-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1120 11.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/></svg>
+        <span>Escribir por WhatsApp<small id="wa-t"></small></span></a>
+      <a id="b-mail" href="#">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <span>Escribir un correo<small id="mail-t"></small></span></a>
+    </div>
+  </div>
+  <div class="legal">
+    <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com">mpluscorp.com</a></span>
+    <span>Datos abiertos: <a id="b-json" href="#">snapshot.json</a> · <span id="pie-gen"></span></span>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Configuración. Lo único que se edita a mano.
+// La página es pública y no lleva claves: lee un solo archivo público que
+// Apps Script sube cada hora (Etapa30, subirSnapshotPublico_). Si mañana lo
+// genera otra plataforma, solo cambia quién lo escribe; esta URL sigue igual.
+// ---------------------------------------------------------------------------
+const CONFIG = {
+  SNAPSHOT_URL: 'https://cqdvccjpwwyesvoumyjd.supabase.co/storage/v1/object/public/radar-publico/snapshot.json',
+  CORREO: 'info@mpluscorp.com',
+  WHATSAPP: '50244863514',   // con código de país, sin + ni espacios
+  WHATSAPP_TEXTO: 'Hola, vi el Radar Público y quiero saber más.',
+  RECARGA_MIN: 10,           // el snapshot cambia cada hora; 10 min basta para no quedarse atrás
+  HORAS_VIEJO: 3             // si el snapshot tiene más de esto, se avisa: algo dejó de correr
+  // "Acceso clientes" queda fuera hasta que los radares vivan en mpluscorp.com/<ruta>
+  // (Decisiones, "Sobre dónde viven los radares").
+};
+
+const GEO = {"viewBox":"0 0 600 633","paths":{"Jutiapa":"M 302.9 620.3 304 610.2 298.1 598.3 294.8 587.6 298.7 584.7 305.9 589.5 315.1 591.5 320.6 583.8 326 581.9 330.7 572.8 329.4 561.9 318.5 552.9 309.5 549.5 314.6 536.3 325.6 533.3 329.8 521.7 339.2 521.5 344.3 515.6 347.9 515.8 354.5 520.9 356.5 513.8 364.7 508.1 372.7 510.9 385 504.4 383.9 499 389.9 499.6 397.5 507.1 408.7 506.5 412 511.6 410.1 519.3 412.4 522.2 407.8 527.1 401.5 524 398.4 528 400.7 533 397.4 536.9 404.7 542.8 407.7 552.3 391.8 556.4 381.2 564.4 375 575.7 373.7 582.7 367.6 578.9 362.7 578.4 356.1 581 335.1 597.3 331.5 603.9 323.9 609.4 321.7 619 324.2 628.8 302.9 620.3 Z","Chiquimula":"M 412.4 522.2 410.1 519.3 412 511.6 408.7 506.5 397.5 507.1 389.9 499.6 383.9 499 382.3 495.8 387.4 480.9 386.2 471.2 382.9 467.8 375.9 468.3 379.3 461.9 379.6 454.9 385.4 449.7 397 454.6 409.4 454.5 418.3 447.2 422.3 446.3 430.1 448.6 437.4 446 444.1 447.4 453.2 441.2 456.8 446.7 450.6 453.8 451.3 458.7 463.9 477.8 461.8 484.3 461.9 497.2 458.5 499.1 449.2 498.7 438 511.9 433.2 513.8 432.4 523 425.4 519.1 422.1 522.7 412.4 522.2 Z","Petén":"M 447.2 295.3 442.7 294.1 429.1 294.6 423.6 302.6 413.7 303.2 406.4 305.6 405.9 297.7 388.4 297.3 381.7 298.6 372.3 292.8 365.1 295.8 355.2 295.4 350.9 288.3 329.8 281.6 327.3 283 302.1 275.3 272 271.1 268 271.6 266.3 265.9 269.8 262.9 270.1 257.3 265.8 254.9 266 244.3 269.2 241 274.8 230.7 275.2 219.7 263.3 218.1 262.3 214.3 253.2 209.2 247.2 210.8 237.7 203.4 239.7 193.8 234.7 184.7 224.6 170.5 210.3 161.6 200.2 158.6 190.1 151.4 175.6 144.8 174.1 140.1 167.5 129.6 160.2 128.2 154.9 122.6 152.1 116.3 147.1 113.7 142.5 103.9 131.6 103.9 130.4 100.2 120.2 96.6 121.9 94 186.1 93.9 185.4 10.1 189.5 7.9 292.1 6.7 388.4 5.2 452.6 4 455.6 79.2 456.7 122.7 453.1 205.2 450.4 252.5 447.3 287.9 447.2 295.3 Z","San Marcos":"M 24.3 368.8 30 376 31.9 394.1 41.1 395.6 46.4 389.4 53.2 387.7 62.2 382.8 68.5 386.6 82 384.4 84.9 390.8 96.8 404 84.6 419.1 83.3 423.6 88.5 432.6 85.9 442.4 79.3 447.8 76.5 459 70.7 470.8 62.5 479.1 47.6 478.1 29.7 483.4 20.6 492.5 22.7 495 33.1 496.4 38.1 509.4 29.2 513.6 23.4 513.2 16.5 516.1 4 507.2 9.7 503.5 16 488.6 16.4 483.4 12.1 466.3 12.7 461.3 17.4 453.1 17.4 438.7 24.8 435.3 29.2 426.8 10 402 9.8 394 24.3 368.8 Z","Huehuetenango":"M 96.8 404 84.9 390.8 82 384.4 68.5 386.6 62.2 382.8 53.2 387.7 46.4 389.4 41.1 395.6 31.9 394.1 30 376 24.3 368.8 76 278.4 80.1 275 187.5 274 158.9 332.4 149.1 341.7 142.6 344.3 138.5 358.6 144.1 371.6 148.7 376.5 154.5 376 160.5 378.3 159.6 386.5 161.4 392.7 152.8 392.8 143.1 395.1 141.2 397.3 137.4 397 122 402.6 117.4 412.9 111.3 413.8 106.8 406.5 96.8 404 Z","Quiché":"M 141.2 397.3 143.1 395.1 152.8 392.8 161.4 392.7 159.6 386.5 160.5 378.3 154.5 376 148.7 376.5 144.1 371.6 138.5 358.6 142.6 344.3 149.1 341.7 158.9 332.4 187.5 274 262.5 273 268 271.6 269.9 278.5 265 282.1 253.9 282.3 252 284.3 244.9 277.4 236.8 278 231.7 283.6 221.7 290 224.3 294 221.4 308.7 214.9 320.1 219.7 333.2 237.3 337.8 241.6 341.5 246.1 358 233.1 368.1 231.6 376.4 239.4 381.1 262.7 384.4 264.9 388.8 261.3 396.2 255.8 403.9 233.6 403.8 207.8 397.6 207 414.1 218.2 428.3 231.6 436.5 230.9 440.5 236.7 445.8 239.1 451.1 224.8 447.5 217.2 447.6 210.1 445.6 191.7 446.3 184.7 449.7 180.5 460.6 175.5 463.5 170.9 458.3 165.3 456.1 161.3 450.8 156.5 447.1 157.7 443.6 152.2 434.6 148 431.6 153.4 422.4 148 412.8 141.3 406.6 141.2 397.3 Z","Alta Verapaz":"M 268 271.6 272 271.1 302.1 275.3 327.3 283 329.8 281.6 350.9 288.3 355.2 295.4 365.1 295.8 372.3 292.8 381.7 298.6 388.4 297.3 405.9 297.7 406.4 305.6 413.7 303.2 423.6 302.6 419.7 308.1 414.4 310.2 411.8 315.3 404.5 319.9 386.3 346.4 386.3 349.5 396.2 361 392.9 367.6 389 370 388 390.2 391 395.6 390.7 401 394.4 407 384.2 409.5 370 410.9 363.1 408.6 354.1 410.7 347.3 412.1 340 411.4 346.4 401.9 347.4 394.5 342.8 391.2 324.3 394.4 297.8 391.7 296.1 398.4 289.6 404.2 276.5 396.2 261.3 396.2 264.9 388.8 262.7 384.4 239.4 381.1 231.6 376.4 233.1 368.1 246.1 358 241.6 341.5 237.3 337.8 219.7 333.2 214.9 320.1 221.4 308.7 224.3 294 221.7 290 231.7 283.6 236.8 278 244.9 277.4 252 284.3 253.9 282.3 265 282.1 269.9 278.5 268 271.6 Z","Izabal":"M 423.6 302.6 429.1 294.6 442.7 294.1 447.2 295.3 448.7 298.7 455.8 296.1 476.1 295.5 489.2 298.6 494.7 296.3 501.9 301.3 507 299.9 513.6 301.2 522.6 307.8 537.7 316.8 536.4 324.7 542 324 548.8 309.8 547.7 303.8 557.7 302.2 549.5 296.5 546.3 292 539.9 288.6 540.1 283.8 548.3 287.8 563.7 300.2 579.1 307 596 320.5 595.7 323.5 583.7 327.9 578.6 336.8 571.9 343.7 488.1 411.4 468 419.3 462.6 422.4 457.4 417.7 454.8 401.3 457.7 399.6 457.8 391.3 452.7 388.1 446.6 387.4 437.3 392.2 420.1 399.5 402.6 405.7 394.4 407 390.7 401 391 395.6 388 390.2 389 370 392.9 367.6 396.2 361 386.3 349.5 386.3 346.4 404.5 319.9 411.8 315.3 414.4 310.2 419.7 308.1 423.6 302.6 Z","Zacapa":"M 456.8 446.7 453.2 441.2 444.1 447.4 437.4 446 430.1 448.6 422.3 446.3 418.3 447.2 409.4 454.5 397 454.6 385.4 449.7 379.6 454.9 379.3 461.9 375.9 468.3 367.4 467.5 360.1 456.3 361.2 453.8 364.5 450 370.8 448.6 358.7 432.2 366.4 428.2 354.1 410.7 363.1 408.6 370 410.9 384.2 409.5 394.4 407 402.6 405.7 420.1 399.5 437.3 392.2 446.6 387.4 452.7 388.1 457.8 391.3 457.7 399.6 454.8 401.3 457.4 417.7 462.6 422.4 458.9 426.9 456.6 434 459.6 440.7 456.8 446.7 Z","Retalhuleu":"M 16.5 516.1 23.4 513.2 29.2 513.6 38.1 509.4 41 508.3 49.7 512 61.9 510.4 68 501.8 75.8 484 85.7 477.4 87.4 480 84.9 487.7 90 489.2 99.6 482.2 107.9 480.4 113 481.3 104.4 490.6 104.4 496.1 98.6 508.1 97.5 518.9 100.2 525.9 99.5 539.5 96 547.6 94.7 558.5 90.5 564.8 91.6 572.1 76 562.6 54.3 546.9 33.3 528.1 16.5 516.1 Z","Suchitepéquez":"M 91.6 572.1 90.5 564.8 94.7 558.5 96 547.6 99.5 539.5 100.2 525.9 97.5 518.9 98.6 508.1 104.4 496.1 104.4 490.6 113 481.3 119 477.2 122 483.6 118.1 493.9 129 497.4 131.8 489.7 137.9 492.6 143.9 492.1 150.4 498.3 150.7 504.7 162.7 502.5 171.9 508.6 174.5 511.3 172.5 523.8 167.4 535.1 167 542.4 163.8 548 146.5 546.9 135.9 542.9 134.9 532.4 131.8 532.5 126.3 538.5 127.8 544.6 120.6 548.7 121.4 560.9 107.5 581.1 91.6 572.1 Z","Escuintla":"M 107.5 581.1 121.4 560.9 120.6 548.7 127.8 544.6 126.3 538.5 131.8 532.5 134.9 532.4 135.9 542.9 146.5 546.9 163.8 548 167 542.4 167.4 535.1 172.5 523.8 175.6 526 182.1 524.1 186.7 527 197.2 522 205.2 514.6 210.8 519.6 215.7 527.3 224.2 519 231.4 521.2 240.8 517.4 242.8 523 249 525.5 250.6 540.4 253.9 549.6 250.6 556.3 261.3 557.7 252.1 566.2 255.1 569.5 250 577.6 245 580.2 245.1 600.8 233.2 599.7 203 602.7 183.2 602.5 165 600.6 142.6 596.4 107.5 581.1 Z","Santa Rosa":"M 329.8 521.7 325.6 533.3 314.6 536.3 309.5 549.5 318.5 552.9 329.4 561.9 330.7 572.8 326 581.9 320.6 583.8 315.1 591.5 305.9 589.5 298.7 584.7 294.8 587.6 298.1 598.3 304 610.2 302.9 620.3 278.9 609.9 264.1 604.6 245.1 600.8 245 580.2 250 577.6 255.1 569.5 252.1 566.2 261.3 557.7 250.6 556.3 253.9 549.6 267.6 542.2 271.8 538.4 271.1 529.4 273.7 522.4 279.7 512.7 287.1 514.7 295 509.8 298.1 512.8 318.3 508.8 320.5 514.5 329.8 521.7 Z","Chimaltenango":"M 175.5 463.5 180.5 460.6 184.7 449.7 191.7 446.3 210.1 445.6 217.2 447.6 224.8 447.5 239.1 451.1 238 455 227.4 461.7 223.3 470.4 220.7 476.6 222.5 486.8 219.3 492.9 209 503.1 205.2 514.6 197.2 522 186.7 527 182.1 524.1 175.6 526 172.5 523.8 174.5 511.3 171.9 508.6 173.1 493.1 177.7 482.7 178.4 475.9 175.5 463.5 Z","Sacatepéquez":"M 240.8 517.4 231.4 521.2 224.2 519 215.7 527.3 210.8 519.6 205.2 514.6 209 503.1 219.3 492.9 222.5 486.8 220.7 476.6 223.3 470.4 228.8 474.7 234.3 474.8 240.4 481.8 245.2 490.1 243 499.4 240.8 517.4 Z","Guatemala":"M 253.9 549.6 250.6 540.4 249 525.5 242.8 523 240.8 517.4 243 499.4 245.2 490.1 240.4 481.8 234.3 474.8 228.8 474.7 223.3 470.4 227.4 461.7 238 455 239.1 451.1 248.5 454.1 256.7 453 264 450.2 277.3 451.4 276.4 458.6 284.7 458 287.7 467.3 286.6 473.9 291.2 478.2 301.9 482.2 306 485.3 304 489.8 297.7 495 295 509.8 287.1 514.7 279.7 512.7 273.7 522.4 271.1 529.4 271.8 538.4 267.6 542.2 253.9 549.6 Z","Jalapa":"M 383.9 499 385 504.4 372.7 510.9 364.7 508.1 356.5 513.8 354.5 520.9 347.9 515.8 344.3 515.6 339.2 521.5 329.8 521.7 320.5 514.5 318.3 508.8 298.1 512.8 295 509.8 297.7 495 304 489.8 306 485.3 311.2 479.9 320.1 476.6 326.6 477.1 331.1 468.5 339.5 466.8 348.2 462.7 353.3 456.1 361.2 453.8 360.1 456.3 367.4 467.5 375.9 468.3 382.9 467.8 386.2 471.2 387.4 480.9 382.3 495.8 383.9 499 Z","El Progreso":"M 340 411.4 347.3 412.1 354.1 410.7 366.4 428.2 358.7 432.2 370.8 448.6 364.5 450 361.2 453.8 353.3 456.1 348.2 462.7 339.5 466.8 331.1 468.5 326.6 477.1 320.1 476.6 311.2 479.9 306 485.3 301.9 482.2 291.2 478.2 286.6 473.9 287.7 467.3 284.7 458 276.4 458.6 277.3 451.4 284.1 454 291.6 452.7 294.6 442.7 336.1 413.6 340 411.4 Z","Sololá":"M 161.3 450.8 165.3 456.1 170.9 458.3 175.5 463.5 178.4 475.9 177.7 482.7 173.1 493.1 171.9 508.6 162.7 502.5 150.7 504.7 150.4 498.3 143.9 492.1 137.9 492.6 131.8 489.7 129 497.4 118.1 493.9 122 483.6 119 477.2 123.3 471.2 125 465.2 132.3 458.9 142.1 459.6 154.4 458.6 161.3 450.8 Z","Quetzaltenango":"M 38.1 509.4 33.1 496.4 22.7 495 20.6 492.5 29.7 483.4 47.6 478.1 62.5 479.1 70.7 470.8 76.5 459 79.3 447.8 85.9 442.4 88.5 432.6 83.3 423.6 84.6 419.1 96.8 404 106.8 406.5 111.3 413.8 101.1 417.7 101 423.7 105.3 439.7 108.9 448 112.7 451.7 118.7 451.2 120.5 458.7 125 465.2 123.3 471.2 119 477.2 113 481.3 107.9 480.4 99.6 482.2 90 489.2 84.9 487.7 87.4 480 85.7 477.4 75.8 484 68 501.8 61.9 510.4 49.7 512 41 508.3 38.1 509.4 Z","Baja Verapaz":"M 239.1 451.1 236.7 445.8 230.9 440.5 231.6 436.5 218.2 428.3 207 414.1 207.8 397.6 233.6 403.8 255.8 403.9 261.3 396.2 276.5 396.2 289.6 404.2 296.1 398.4 297.8 391.7 324.3 394.4 342.8 391.2 347.4 394.5 346.4 401.9 340 411.4 336.1 413.6 294.6 442.7 291.6 452.7 284.1 454 277.3 451.4 264 450.2 256.7 453 248.5 454.1 239.1 451.1 Z","Totonicapán":"M 111.3 413.8 117.4 412.9 122 402.6 137.4 397 141.2 397.3 141.3 406.6 148 412.8 153.4 422.4 148 431.6 152.2 434.6 157.7 443.6 156.5 447.1 161.3 450.8 154.4 458.6 142.1 459.6 132.3 458.9 125 465.2 120.5 458.7 118.7 451.2 112.7 451.7 108.9 448 105.3 439.7 101 423.7 101.1 417.7 111.3 413.8 Z"}};
+
+// Nombres de tema tal como salen en el snapshot (PUBLICO.TEMA_NOMBRE).
+const TEMAS = {
+  seguridad: 'Seguridad y violencia',
+  conflictividad: 'Conflictividad y bloqueos',
+  desastres: 'Desastres y emergencias',
+  servicios: 'Servicios públicos'
+};
+const MEDIDAS = {
+  hechos7d: { sub: 'Hechos en los últimos 7 días, por departamento', rank: 'Los 10 primeros, últimos 7 días', largo: 'hechos en 7 días' },
+  hechos24h: { sub: 'Hechos en las últimas 24 horas, por departamento', rank: 'Los 10 primeros, últimas 24 horas', largo: 'hechos en 24 horas' },
+  corroborados7d: { sub: 'Hechos corroborados por dos medios o más, últimos 7 días', rank: 'Los 10 primeros en hechos corroborados, 7 días', largo: 'corroborados en 7 días' }
+};
+
+// Escala secuencial sobre fondo oscuro: un solo tono (el azul de M+); a más
+// hechos, más luz. El cero tiene su propio tono, apenas sobre el fondo, para
+// que "sin hechos" no se lea como "pocos". Sin rojos ni verdes: un
+// departamento con más hechos no es "malo"; el panel no califica.
+const RAMPA = ['#23458F', '#1F62C2', '#1A82EC', '#4EA7FF', '#A9D5FF'];
+const CERO = '#2B2170';
+
+const fmt = new Intl.NumberFormat('es-GT');
+const $ = id => document.getElementById(id);
+let datos = null, medida = 'hechos7d', seleccion = null, orden = { k: 'hechos7d', dir: -1 }, primera = true;
+const QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// --- Datos -----------------------------------------------------------------
+
+async function cargar() {
+  const demo = new URLSearchParams(location.search).has('demo');
+  $('demo').hidden = !demo;
+  if (demo) return pintar(datosDeEjemplo());
+  try {
+    // no-cache: revalida con el servidor; el bucket manda cache-control de 5 min
+    const r = await fetch(CONFIG.SNAPSHOT_URL, { cache: 'no-cache' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    pintar(await r.json());
+  } catch (e) {
+    if (!datos) { $('vivo').className = 'vivo mal'; $('vivo-t').textContent = 'No se pudieron cargar los datos'; }
+  }
+}
+
+// Solo para revisar el diseño con ?demo. Nunca es la vista por defecto.
+function datosDeEjemplo() {
+  const pesos = { 'Guatemala': 60, 'Escuintla': 22, 'Quetzaltenango': 18, 'Alta Verapaz': 16, 'Huehuetenango': 15,
+    'San Marcos': 13, 'Izabal': 11, 'Petén': 10, 'Chimaltenango': 9, 'Jutiapa': 8, 'Sacatepéquez': 7, 'Quiché': 7,
+    'Suchitepéquez': 6, 'Santa Rosa': 6, 'Zacapa': 5, 'Chiquimula': 5, 'Retalhuleu': 4, 'Sololá': 4, 'Jalapa': 3,
+    'Baja Verapaz': 2, 'Totonicapán': 2, 'El Progreso': 0 };
+  const temas = Object.keys(TEMAS);
+  let i = 0;
+  const deps = Object.keys(GEO.paths).sort((a, b) => a.localeCompare(b, 'es')).map(n => {
+    const h7 = pesos[n] || 0, s = (i++ * 7919) % 13;
+    const h24 = Math.round(h7 / 6 + (s % 4) - 1.5), ant = Math.round(h7 / 6 + (s % 3) - 1);
+    return { nombre: n, hechos7d: h7, hechos24h: Math.max(0, h24), hechos24hAnterior: Math.max(0, ant),
+      corroborados7d: Math.round(h7 * (0.35 + (s % 5) / 20)), temaPrincipal: h7 ? temas[s % 4] : null };
+  });
+  const suma = k => deps.reduce((a, d) => a + d[k], 0);
+  return { version: 1, generado: new Date(Date.now() - 18 * 60000).toISOString(), ventanaDias: 7,
+    totales: { hechos7d: suma('hechos7d') + 21, hechos24h: suma('hechos24h') + 3, hechos24hAnterior: suma('hechos24hAnterior') + 2,
+      corroborados7d: suma('corroborados7d'), sinDepartamento7d: 21 },
+    departamentos: deps, salud: { datosAlDia: true } };
+}
+
+// --- Pintar ----------------------------------------------------------------
+
+function pintar(d) {
+  datos = d;
+  datos.deps = d.departamentos.map(x => ({ ...x, cambio: x.hechos24h - x.hechos24hAnterior }));
+  const t = d.totales, vacio = t.hechos7d === 0;
+
+  pintarEstado(d, vacio);
+  // Las cifras cuentan desde cero solo la primera vez; en las recargas de
+  // cada 10 min saltar de 0 a 254 otra vez distraería.
+  contar($('c-7d'), t.hechos7d);
+  $('c-7d-n').innerHTML = vacio ? 'todavía sin datos de la semana' : 'en los 22 departamentos y sin ubicar';
+  contar($('c-24'), t.hechos24h);
+  $('c-24-n').innerHTML = vacio ? '&nbsp;' : chipCambio(t.hechos24h - t.hechos24hAnterior) + '<span>contra las 24 h anteriores (' + fmt.format(t.hechos24hAnterior) + ')</span>';
+  contar($('c-cor'), t.corroborados7d);
+  $('c-cor-m').style.width = t.hechos7d ? Math.round(100 * t.corroborados7d / t.hechos7d) + '%' : '0';
+  $('c-cor-n').textContent = t.hechos7d ? pct(t.corroborados7d, t.hechos7d) + ' de los hechos, cubiertos por dos medios o más' : 'cubiertos por dos medios o más';
+  contar($('c-sin'), t.sinDepartamento7d);
+
+  $('velo').hidden = !vacio;
+  if (vacio) $('velo-t').textContent = d.salud && d.salud.clasificadoHasta
+    ? 'Notas procesadas hasta el ' + fecha(d.salud.clasificadoHasta) + '. El mapa se llena solo cuando llegue a hoy.'
+    : 'El mapa se llena solo en cuanto haya hechos de la semana.';
+
+  if (!seleccion || !datos.deps.find(x => x.nombre === seleccion)) {
+    const top = [...datos.deps].sort((a, b) => b.hechos7d - a.hechos7d)[0];
+    seleccion = top && top.hechos7d ? top.nombre : 'Guatemala';
+  }
+  pintarMedida(); pintarDetalle(); pintarTemas(); pintarCambios(); pintarTabla();
+  $('pie-gen').textContent = 'actualizado el ' + fecha(d.generado, true);
+  primera = false;
+}
+
+function contar(el, hasta) {
+  if (!primera || QUIETO || !hasta) { el.textContent = fmt.format(hasta); return; }
+  const t0 = performance.now(), dur = 1100;
+  const paso = ahora => {
+    const x = Math.min(1, (ahora - t0) / dur), e = 1 - Math.pow(1 - x, 3);
+    el.textContent = fmt.format(Math.round(hasta * e));
+    if (x < 1) requestAnimationFrame(paso);
+  };
+  requestAnimationFrame(paso);
+}
+
+// Las barras se pintan en cero y crecen en el cuadro siguiente: así la
+// transición de CSS tiene desde dónde partir.
+function crecer(caja) {
+  if (QUIETO) return;
+  const els = caja.querySelectorAll('[data-w]');
+  els.forEach(e => { e.style.width = '0'; });
+  requestAnimationFrame(() => requestAnimationFrame(() => els.forEach(e => { e.style.width = e.dataset.w; })));
+}
+
+// Lo que cambia al elegir 7 días / 24 horas / corroborados
+function pintarMedida() {
+  $('mapa-sub').textContent = MEDIDAS[medida].sub;
+  $('rank-sub').textContent = MEDIDAS[medida].rank;
+  pintarMapa(); pintarRanking();
+}
+
+function pintarEstado(d, vacio) {
+  const gen = new Date(d.generado), horas = (Date.now() - gen) / 36e5;
+  const viejo = horas > CONFIG.HORAS_VIEJO, alDia = d.salud && d.salud.datosAlDia && !viejo;
+  $('vivo').className = 'vivo' + (alDia ? '' : ' aviso');
+  $('vivo-t').innerHTML = (alDia ? 'En vivo' : viejo ? 'Actualización detenida' : 'Poniéndose al día') +
+    '<span class="txt-largo"> · ' + hace(gen) + '</span>';
+  $('vivo').title = alDia ? 'Datos al día' : vacio ? 'Los conteos todavía no llegan a hoy' : 'Las cifras pueden estar incompletas';
+}
+
+function escala() {
+  const max = Math.max(0, ...datos.deps.map(x => x[medida]));
+  // Cortes iguales entre 1 y el máximo: con conteos chicos los cuantiles
+  // repiten cortes y la leyenda miente.
+  const n = Math.min(RAMPA.length, Math.max(1, max));
+  const cortes = [];
+  for (let i = 1; i <= n; i++) cortes.push(Math.round(1 + (max - 1) * i / n));
+  return { max, cortes, color(v) {
+    if (!v) return CERO;
+    let i = cortes.findIndex(c => v <= c); if (i < 0) i = n - 1;
+    return RAMPA[Math.round(i * (RAMPA.length - 1) / Math.max(1, n - 1))];
+  } };
+}
+
+function pintarMapa() {
+  const svg = $('mapa'), esc = escala(), ns = 'http://www.w3.org/2000/svg';
+  if (!svg.childElementCount) {
+    Object.entries(GEO.paths).forEach(([nombre, d]) => {
+      const p = document.createElementNS(ns, 'path');
+      p.setAttribute('d', d); p.setAttribute('class', 'depto'); p.dataset.n = nombre;
+      p.setAttribute('tabindex', '0'); p.setAttribute('role', 'button');
+      p.addEventListener('click', () => elegir(nombre));
+      p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(nombre, true); } });
+      p.addEventListener('pointermove', e => tipEn(e.clientX, e.clientY, textoDepto(nombre)));
+      p.addEventListener('pointerleave', ocultarTip);
+      p.addEventListener('focus', () => { const r = p.getBoundingClientRect(); tipEn(r.left + r.width / 2, r.top + r.height / 2, textoDepto(nombre)); });
+      p.addEventListener('blur', ocultarTip);
+      svg.appendChild(p);
+    });
+    // Entrada: los departamentos aparecen de norte a sur, como si el radar
+    // los fuera encontrando.
+    svg.querySelectorAll('.depto').forEach(p => {
+      const b = p.getBBox();
+      p.style.setProperty('--d', (0.05 + 0.7 * (b.y + b.height / 2) / 633).toFixed(2) + 's');
+    });
+    const g = document.createElementNS(ns, 'g'); g.id = 'pings'; svg.appendChild(g);
+    requestAnimationFrame(() => svg.parentElement.classList.add('mapa-listo'));
+  }
+  svg.querySelectorAll('.depto').forEach(p => {
+    const dep = datos.deps.find(x => x.nombre === p.dataset.n), v = dep ? dep[medida] : 0;
+    p.style.fill = esc.color(v);
+    p.classList.toggle('sel', p.dataset.n === seleccion);
+    p.setAttribute('aria-label', p.dataset.n + ': ' + fmt.format(v) + ' ' + MEDIDAS[medida].largo);
+    if (p.dataset.n === seleccion) svg.insertBefore(p, $('pings'));   // el borde del elegido encima; los pings, más arriba
+  });
+  pintarPings();
+  let html = '<span class="esc"><span class="sw" style="background:' + CERO + ';outline:1px solid rgba(255,255,255,.18)"></span></span><span>sin hechos</span>';
+  if (esc.max > 0) html += '<span class="esc">' + esc.cortes.map(c => '<span class="sw" style="background:' + esc.color(c) + '"></span>').join('') +
+    '</span><span>de 1 a ' + fmt.format(esc.max) + ' ' + MEDIDAS[medida].largo + '</span>';
+  if ($('pings').childElementCount) html += '<span class="ping-ley"><i></i>más hechos en las últimas 24 h</span>';
+  $('leyenda').innerHTML = html;
+}
+
+// Tres pings como máximo: más, y el mapa parece una alarma.
+function pintarPings() {
+  const g = $('pings'), ns = 'http://www.w3.org/2000/svg';
+  g.innerHTML = '';
+  const top = datos.deps.filter(d => d.hechos24h > 0).sort((a, b) => b.hechos24h - a.hechos24h).slice(0, 3);
+  top.forEach(d => {
+    const p = $('mapa').querySelector('.depto[data-n="' + d.nombre + '"]');
+    if (!p) return;
+    const b = p.getBBox(), cx = b.x + b.width / 2, cy = b.y + b.height / 2;
+    const s = document.createElementNS(ns, 'g'); s.setAttribute('class', 'ping');
+    s.innerHTML = '<circle cx="' + cx + '" cy="' + cy + '" r="7"/><circle class="c2" cx="' + cx + '" cy="' + cy + '" r="7"/>' +
+      '<circle class="nucleo" cx="' + cx + '" cy="' + cy + '" r="3.2"/>';
+    g.appendChild(s);
+  });
+}
+
+function textoDepto(nombre) {
+  const d = datos.deps.find(x => x.nombre === nombre) || {};
+  return '<b>' + nombre + '</b><br>' + fmt.format(d.hechos7d || 0) + ' hechos en 7 días · ' + fmt.format(d.hechos24h || 0) + ' en 24 h' +
+    '<br><span class="t2">' + fmt.format(d.corroborados7d || 0) + ' corroborados' + (d.temaPrincipal ? ' · ' + TEMAS[d.temaPrincipal] : '') + '</span>';
+}
+function tipEn(x, y, html) {
+  const T = $('tip'); T.innerHTML = html; T.style.opacity = 1;
+  const w = T.offsetWidth, h = T.offsetHeight;
+  T.style.left = Math.max(8, Math.min(x + 14, innerWidth - w - 8)) + 'px';
+  T.style.top = (y + 16 + h > innerHeight ? y - h - 12 : y + 16) + 'px';
+}
+function ocultarTip() { $('tip').style.opacity = 0; }
+
+function pintarDetalle() {
+  const d = datos.deps.find(x => x.nombre === seleccion) || { nombre: seleccion };
+  const max = Math.max(1, d.hechos24h || 0, d.hechos24hAnterior || 0);
+  const anchoB = v => Math.round(100 * (v || 0) / max) + '%';
+  $('detalle').innerHTML =
+    '<p class="t-sub" style="margin:0 0 4px">Departamento elegido</p>' +
+    '<h2 class="nombre">' + d.nombre + '</h2>' +
+    (d.temaPrincipal ? '<span class="tema">' + TEMAS[d.temaPrincipal] + '</span>' : '<span class="tema no">Sin hechos en la semana</span>') +
+    '<div class="grande"><b class="num">' + fmt.format(d.hechos7d || 0) + '</b><span>hechos en 7 días</span></div>' +
+    '<div class="comp">' +
+      '<span>24 h anteriores</span><span><span class="b ant" style="display:block;width:' + anchoB(d.hechos24hAnterior) + '"></span></span><b class="num">' + fmt.format(d.hechos24hAnterior || 0) + '</b>' +
+      '<span>Últimas 24 h</span><span><span class="b" style="display:block;width:' + anchoB(d.hechos24h) + '"></span></span><b class="num">' + fmt.format(d.hechos24h || 0) + '</b>' +
+    '</div>' +
+    '<div class="sep"></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--tinta2)"><span>Corroborados por dos medios o más</span><b class="num" style="color:var(--tinta)">' +
+      fmt.format(d.corroborados7d || 0) + (d.hechos7d ? ' · ' + pct(d.corroborados7d, d.hechos7d) : '') + '</b></div>' +
+    '<div class="meter"><i style="width:' + (d.hechos7d ? Math.round(100 * d.corroborados7d / d.hechos7d) : 0) + '%"></i></div>';
+}
+
+function pintarTemas() {
+  const cuenta = {}; Object.keys(TEMAS).forEach(k => cuenta[k] = 0);
+  datos.deps.forEach(d => { if (d.temaPrincipal && cuenta[d.temaPrincipal] !== undefined) cuenta[d.temaPrincipal]++; });
+  const total = Object.values(cuenta).reduce((a, b) => a + b, 0);
+  if (!total) { $('temas').innerHTML = '<p class="vacio">Aparece en cuanto haya hechos de la semana.</p>'; return; }
+  const max = Math.max(...Object.values(cuenta));
+  $('temas').innerHTML = Object.entries(cuenta).sort((a, b) => b[1] - a[1]).map(([k, v]) =>
+    '<div class="fila-b"><span class="n">' + TEMAS[k] + '</span><span class="pista"><span class="seg1" data-w="' +
+    (v ? Math.max(2, 100 * v / max) : 0) + '%" style="width:' + (v ? Math.max(2, 100 * v / max) : 0) + '%"></span></span><span class="v num">' + v + '</span></div>').join('');
+  crecer($('temas'));
+}
+
+function pintarRanking() {
+  // Barras apiladas: la parte corroborada y la de un solo medio, con 2 px de
+  // separación. En "24 horas" no hay corroboración por día en el snapshot, así
+  // que la barra va entera y sin leyenda.
+  const conCor = medida !== 'hechos24h';
+  $('rank-ley').style.visibility = conCor && medida === 'hechos7d' ? 'visible' : 'hidden';
+  const filas = [...datos.deps].filter(d => d[medida] > 0).sort((a, b) => b[medida] - a[medida] || a.nombre.localeCompare(b.nombre, 'es')).slice(0, 10);
+  if (!filas.length) { $('ranking').innerHTML = '<p class="vacio">Aparece en cuanto haya hechos en este período.</p>'; return; }
+  const max = filas[0][medida];
+  $('ranking').innerHTML = filas.map(d => {
+    const v = d[medida];
+    let barra;
+    if (medida === 'hechos7d') {
+      const c = Math.min(d.corroborados7d, v);
+      barra = (c ? '<span class="seg1" data-w="' + (100 * c / max) + '%"></span>' : '') +
+              (v - c ? '<span class="seg2" data-w="' + (100 * (v - c) / max) + '%"></span>' : '');
+    } else barra = '<span class="seg1" data-w="' + (100 * v / max) + '%"></span>';
+    return '<div class="fila-b click" data-n="' + d.nombre + '"><span class="n">' + d.nombre + '</span><span class="pista">' + barra +
+      '</span><span class="v num">' + fmt.format(v) + '</span></div>';
+  }).join('');
+  $('ranking').querySelectorAll('[data-w]').forEach(e => { e.style.width = e.dataset.w; });
+  crecer($('ranking'));
+  $('ranking').querySelectorAll('.fila-b').forEach(f => {
+    f.addEventListener('click', () => elegir(f.dataset.n));
+    f.addEventListener('pointermove', e => tipEn(e.clientX, e.clientY, textoDepto(f.dataset.n)));
+    f.addEventListener('pointerleave', ocultarTip);
+  });
+}
+
+function pintarCambios() {
+  const fila = d => '<div class="fila-c" data-n="' + d.nombre + '"><span>' + d.nombre + '</span><span class="de num">' + d.hechos24hAnterior + ' → ' + d.hechos24h +
+    '</span>' + chipCambio(d.cambio) + '</div>';
+  const suben = datos.deps.filter(d => d.cambio > 0).sort((a, b) => b.cambio - a.cambio).slice(0, 5);
+  const bajan = datos.deps.filter(d => d.cambio < 0).sort((a, b) => a.cambio - b.cambio).slice(0, 5);
+  $('suben').innerHTML = suben.length ? suben.map(fila).join('') : '<p class="vacio">Ninguno sube.</p>';
+  $('bajan').innerHTML = bajan.length ? bajan.map(fila).join('') : '<p class="vacio">Ninguno baja.</p>';
+  document.querySelectorAll('.fila-c').forEach(f => f.addEventListener('click', () => elegir(f.dataset.n)));
+}
+
+function pintarTabla() {
+  const filas = [...datos.deps].sort((a, b) => {
+    const va = a[orden.k], vb = b[orden.k];
+    if (orden.k === 'nombre' || orden.k === 'temaPrincipal') return orden.dir * String(va || '').localeCompare(String(vb || ''), 'es');
+    return orden.dir * ((va || 0) - (vb || 0)) || a.nombre.localeCompare(b.nombre, 'es');
+  });
+  document.querySelector('#tabla tbody').innerHTML = filas.map(d =>
+    '<tr data-n="' + d.nombre + '"' + (d.nombre === seleccion ? ' class="sel"' : '') + '><td>' + d.nombre + '</td>' +
+    '<td class="num">' + fmt.format(d.hechos7d) + '</td><td class="num">' + fmt.format(d.hechos24h) + '</td>' +
+    '<td class="num">' + (d.cambio > 0 ? '+' : '') + d.cambio + '</td><td class="num">' + fmt.format(d.corroborados7d) + '</td>' +
+    '<td class="izq">' + (d.temaPrincipal ? TEMAS[d.temaPrincipal] : '—') + '</td></tr>').join('');
+  document.querySelectorAll('#tabla th').forEach(th => {
+    if (th.dataset.k === orden.k) th.setAttribute('aria-sort', orden.dir > 0 ? 'ascending' : 'descending');
+    else th.removeAttribute('aria-sort');
+  });
+}
+
+function elegir(nombre, conTeclado) {
+  seleccion = nombre;
+  pintarMapa(); pintarDetalle(); pintarTabla();
+  // En pantallas angostas la ficha queda debajo del mapa: se lleva a la vista.
+  // Con teclado no, para no mover el foco de lugar.
+  if (window.innerWidth <= 1080 && !conTeclado) $('detalle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// --- Utilidades ------------------------------------------------------------
+
+// El cambio va en tinta neutra con flecha, sin verde ni rojo: subir no es
+// bueno ni malo.
+function chipCambio(c) {
+  if (!c) return '<span class="chip num">= 0</span>';
+  return '<span class="chip num">' + (c > 0 ? '▲ +' : '▼ ') + c + '</span>';
+}
+function pct(a, b) { return b ? Math.round(100 * a / b) + '%' : '0%'; }
+function fecha(iso, hora) {
+  const o = { day: 'numeric', month: 'long', timeZone: 'America/Guatemala' };
+  if (hora) Object.assign(o, { hour: 'numeric', minute: '2-digit' });
+  return new Date(iso).toLocaleString('es-GT', o);
+}
+function hace(f) {
+  const m = Math.round((Date.now() - f) / 60000);
+  if (m < 1) return 'hace un momento';
+  if (m < 60) return 'hace ' + m + ' min';
+  const h = Math.round(m / 60);
+  return h < 48 ? 'hace ' + h + (h === 1 ? ' hora' : ' horas') : 'el ' + fecha(f.toISOString());
+}
+
+// --- Arranque --------------------------------------------------------------
+
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  medida = b.dataset.m;
+  document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  if (datos) pintarMedida();
+}));
+document.querySelectorAll('#tabla th button').forEach(b => b.addEventListener('click', () => {
+  const k = b.parentElement.dataset.k;
+  orden = { k, dir: orden.k === k ? -orden.dir : (k === 'nombre' || k === 'temaPrincipal' ? 1 : -1) };
+  pintarTabla();
+}));
+document.querySelector('#tabla tbody').addEventListener('click', e => { const tr = e.target.closest('tr'); if (tr) elegir(tr.dataset.n); });
+
+$('b-wa').href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(CONFIG.WHATSAPP_TEXTO);
+$('wa-t').textContent = '+' + CONFIG.WHATSAPP.slice(0, 3) + ' ' + CONFIG.WHATSAPP.slice(3, 7) + ' ' + CONFIG.WHATSAPP.slice(7);
+$('b-mail').href = 'mailto:' + CONFIG.CORREO + '?subject=' + encodeURIComponent('Radar Público');
+$('mail-t').textContent = CONFIG.CORREO;
+$('b-json').href = CONFIG.SNAPSHOT_URL;
+$('anio').textContent = new Date().getFullYear();
+
+cargar();
+setInterval(cargar, CONFIG.RECARGA_MIN * 60000);
+</script>
+</body>
+</html>
