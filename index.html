@@ -159,7 +159,7 @@ button{font:inherit;}
 .velo div{background:rgba(22,12,66,.88);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 20px;max-width:320px;
   text-align:center;font-size:13.5px;color:#C9C4E4;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .velo strong{display:block;color:#fff;font-size:15px;font-weight:600;margin-bottom:4px;}
-.marca-agua{position:absolute;right:22px;top:24px;font-size:11px;color:#6F66A8;letter-spacing:.3px;}
+.marca-agua{position:absolute;right:20px;bottom:16px;z-index:1;font-size:11px;letter-spacing:.6px;color:rgba(255,255,255,.28);pointer-events:none;}
 
 /* Ficha del departamento */
 .ficha-d .nombre{font-size:24px;font-weight:600;letter-spacing:-.5px;line-height:1.15;margin:0;}
@@ -247,6 +247,55 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
 .tip b{font-weight:600;font-size:13px;}
 .tip .t2{color:var(--tinta3);}
 
+/* --- Selector dentro del mapa (25/11): arriba, junto al título, se perdía y
+   no se leía qué mide. Va al lado de lo que cambia, y legible sobre oscuro. */
+.t-mapa .t-head{flex-wrap:wrap;}
+.mide{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.mide .seg-et{color:#C9C4E4;font-size:12px;margin:0;}
+.t-mapa .seg{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);box-shadow:none;}
+.t-mapa .seg button{color:#ECE9FA;font-size:13.5px;padding:8px 14px;}
+.t-mapa .seg button:hover{background:rgba(255,255,255,.10);}
+.t-mapa .seg button[aria-pressed="true"]{background:#fff;color:var(--indigo);font-weight:600;}
+/* El departamento elegido se nombra en el propio mapa. */
+.etq-sel{font:600 13px/1 Poppins,system-ui,sans-serif;fill:#fff;paint-order:stroke;stroke:#160C42;stroke-width:4px;stroke-linejoin:round;pointer-events:none;}
+/* Lo que cambia al elegir un departamento destella una vez: así se ve dónde
+   cambió la información sin tener que buscarla. */
+.viendo{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--azul-osc);background:#EAF4FF;
+  padding:3px 10px;border-radius:999px;margin-bottom:8px;}
+.viendo i{width:6px;height:6px;border-radius:50%;background:var(--dato);}
+@keyframes destello{0%{box-shadow:0 0 0 0 rgba(0,139,254,.55);}40%{box-shadow:0 0 0 4px rgba(0,139,254,.35);}100%{box-shadow:var(--sombra);}}
+.destello{animation:destello 1s ease-out;}
+@media (prefers-reduced-motion:reduce){.destello{animation:none;}}
+#ranking-sec{align-self:start;}
+/* Hechos */
+.hechos{display:flex;flex-direction:column;}
+.hechos.dos{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;}
+.hecho{padding:12px 0;border-top:1px solid var(--linea2);}
+.hechos > .hecho:first-child,.hechos.dos > .hecho:nth-child(2){border-top:0;padding-top:2px;}
+.hecho h3{margin:0 0 5px;font-size:14px;line-height:1.38;font-weight:600;letter-spacing:-.1px;color:var(--tinta);}
+.hecho .meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:12px;color:var(--tinta3);}
+.hecho .medios{font-weight:600;color:var(--tinta2);}
+.hecho .medios.cor{color:var(--azul-osc);}
+.hecho .nuevo{font-size:11px;font-weight:600;color:var(--azul-osc);background:#EAF4FF;padding:1px 7px;border-radius:999px;}
+.hecho a{color:var(--azul-osc);text-decoration:none;font-weight:500;}
+.hecho a:hover{text-decoration:underline;}
+.quita{border:1px solid var(--linea);background:#fff;color:var(--tinta2);font-size:12px;padding:5px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+.quita:hover{background:var(--linea2);}
+/* Cómo se aplica */
+.aplica{background:linear-gradient(120deg,#F1EDFF,#EAF4FF);border-color:#DCD5F7;}
+.aplica .lead{margin:0 0 14px;}
+.aplica-b{display:flex;flex-wrap:wrap;gap:10px;}
+.aplica-b button{border:1px solid #CFC6F3;background:#fff;color:var(--indigo);font:inherit;font-size:14px;font-weight:600;padding:12px 18px;border-radius:12px;cursor:pointer;}
+.aplica-b button[aria-expanded="true"]{background:var(--indigo);color:#fff;border-color:var(--indigo);}
+.aplica-b button:focus-visible,.quita:focus-visible{outline:2px solid var(--azul);outline-offset:2px;}
+.panel-ap{margin-top:16px;background:#fff;border:1px solid var(--linea);border-radius:12px;padding:18px 20px;}
+.panel-ap p{margin:0 0 10px;color:var(--tinta2);font-size:14px;max-width:820px;}
+.panel-ap ul{margin:0 0 14px;padding-left:18px;color:var(--tinta);font-size:14px;line-height:1.55;}
+.panel-ap ul small{color:var(--tinta3);}
+.panel-ap .acc{display:flex;flex-wrap:wrap;gap:10px;}
+.panel-ap .btn:not(.pri){background:var(--linea2);color:var(--tinta);}
+.panel-ap .btn:not(.pri):hover{background:var(--linea);}
+
 @media (max-width:1080px){
   .s3{grid-column:span 6}.s4,.s5,.s7,.s8{grid-column:span 12}
   .col{display:grid;grid-template-columns:1fr 1fr;}
@@ -263,7 +312,10 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
   .t{padding:16px;} .t-mapa{padding:16px;}
   .fila-b{grid-template-columns:minmax(0,110px) 1fr 36px;}
   .seg{width:100%;} .seg button{flex:1;padding:8px 6px;}
-  .head > div:last-child{width:100%;}
+  .mide{width:100%;align-items:stretch;}
+  .marca-agua{display:none;}
+  .hechos.dos{grid-template-columns:1fr;}
+  .hechos.dos > .hecho:nth-child(2){border-top:1px solid var(--linea2);padding-top:12px;}
 }
 @media (max-width:420px){ .grilla{gap:12px;} .kpi .v{font-size:26px;} .kpi .pie{font-size:11.5px;} .kpi .et{font-size:12px;} }
 .mapa-caja svg{position:relative;z-index:1;}
@@ -306,7 +358,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       <span><b>Radar Público</b><small>por M+ Intelligence</small></span>
     </a>
     <nav class="nav" aria-label="Secciones">
-      <a href="#mapa-sec">Mapa</a><a href="#ranking-sec">Ranking</a><a href="#tabla-sec">Departamentos</a><a href="#metodo-sec">Cómo se mide</a>
+      <a href="#mapa-sec">Mapa</a><a href="#hechos-sec">Hechos</a><a href="#ranking-sec">Ranking</a><a href="#tabla-sec">Departamentos</a><a href="#metodo-sec">Cómo se mide</a>
     </nav>
     <div class="der">
       <span class="vivo" id="vivo" role="status" aria-live="polite"><span class="p" aria-hidden="true"></span><span id="vivo-t">Cargando…</span></span>
@@ -324,14 +376,6 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       <span class="kicker">Guatemala · se actualiza cada hora</span>
       <h1>Qué está pasando en <em>cada departamento</em></h1>
       <p>Seguridad, conflictividad, desastres y servicios públicos, contados como hechos y no como notas.</p>
-    </div>
-    <div>
-      <span class="seg-et">El mapa y el ranking muestran</span>
-      <div class="seg" role="group" aria-label="Qué miden el mapa y el ranking">
-        <button type="button" data-m="hechos7d" aria-pressed="true">7 días</button>
-        <button type="button" data-m="hechos24h" aria-pressed="false">24 horas</button>
-        <button type="button" data-m="corroborados7d" aria-pressed="false">Corroborados</button>
-      </div>
     </div>
   </div>
 
@@ -363,6 +407,14 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       <div class="barrido" aria-hidden="true"></div>
       <div class="t-head">
         <div><h2>Mapa de hechos</h2><p class="t-sub" id="mapa-sub">Hechos en los últimos 7 días, por departamento</p></div>
+        <div class="mide">
+          <span class="seg-et" id="seg-et">Colorear el mapa y el ranking por</span>
+          <div class="seg" role="group" aria-labelledby="seg-et">
+            <button type="button" data-m="hechos7d" aria-pressed="true">7 días</button>
+            <button type="button" data-m="hechos24h" aria-pressed="false">24 horas</button>
+            <button type="button" data-m="corroborados7d" aria-pressed="false">Corroborados</button>
+          </div>
+        </div>
       </div>
       <div class="mapa-caja">
         <svg id="mapa" viewBox="0 0 600 633" role="img" aria-label="Mapa de Guatemala por departamento"></svg>
@@ -374,11 +426,50 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
 
     <div class="s4 col">
       <section class="t ficha-d" id="detalle" aria-live="polite"></section>
-      <section class="t">
-        <div class="t-head"><div><h2>Qué tema domina</h2><p class="t-sub">En cuántos departamentos cada tema es el que más hechos suma</p></div></div>
-        <div class="barras temas" id="temas"></div>
+      <section class="t" id="aqui" aria-live="polite">
+        <div class="t-head"><div><h2 id="aqui-tit">Qué pasó aquí</h2><p class="t-sub">Los hechos más cubiertos de la semana en este departamento</p></div></div>
+        <div class="hechos" id="aqui-lista"></div>
       </section>
     </div>
+
+    <section class="t s12" id="hechos-sec">
+      <div class="t-head">
+        <div><h2>Los hechos más cubiertos de la semana</h2><p class="t-sub">En todo el país, contados por dos medios distintos o más. El título lo escribe Radar a partir de las notas; el enlace lleva a la primera.</p></div>
+      </div>
+      <div class="hechos dos" id="hechos"></div>
+    </section>
+
+    <section class="t s12 aplica" id="aplica-sec">
+      <p class="lead">Esto es Guatemala entera, en cuatro temas. Radar M+ hace la misma lectura para una empresa o una organización.</p>
+      <div class="aplica-b">
+        <button type="button" aria-expanded="false" aria-controls="ap-empresa" data-p="ap-empresa">¿Cómo aplicaría esto a mi empresa?</button>
+        <button type="button" aria-expanded="false" aria-controls="ap-mas" data-p="ap-mas">¿Qué otra información pueden leer?</button>
+      </div>
+      <div class="panel-ap" id="ap-empresa" hidden>
+        <p>Lo que este panel hace con el país, Radar lo hace con los temas de una organización: lo que se publica sobre ella, su sector y su competencia, en prensa y en redes, todos los días. Lo que recibe:</p>
+        <ul>
+          <li><b>Radar de apertura</b> <small>todos los días, 8:00</small><br>Qué se dijo desde anoche y qué exige respuesta hoy.</li>
+          <li><b>Alerta por excepción</b> <small>solo si ocurre</small><br>Movimiento nuevo en sus temas durante el día.</li>
+          <li><b>Tablero de menciones</b> <small>en línea, todo el día</small><br>Qué está pasando ahora mismo, sin esperar la entrega.</li>
+          <li><b>Balance semanal</b> <small>lunes</small><br>Qué se instaló, qué se apagó y quién ocupó el espacio.</li>
+          <li><b>Informe mensual</b> <small>primer día hábil</small><br>Cómo viene la reputación frente a su entorno.</li>
+        </ul>
+        <div class="acc"><a class="btn pri" data-wa="Hola, vi el Radar Público. ¿Cómo aplicaría esto a mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
+          <a class="btn" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
+      </div>
+      <div class="panel-ap" id="ap-mas" hidden>
+        <p>Este panel muestra cuatro temas que ocurren en un lugar. Para una organización, Radar lee además:</p>
+        <ul>
+          <li>Los temas propios de la organización y los de su sector, no solo los del país.</li>
+          <li>Voceros, funcionarios y otros actores: quién habla de qué y cómo lo cubren.</li>
+          <li>La competencia: quién ocupa el espacio en los temas que le importan.</li>
+          <li>Qué empezó en redes sociales y llegó a la prensa, y cuánto tardó.</li>
+          <li>Qué medios no mencionaron a la organización: los vacíos de relación con la prensa.</li>
+        </ul>
+        <div class="acc"><a class="btn pri" data-wa="Hola, vi el Radar Público. ¿Qué otra información pueden leer para mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
+          <a class="btn" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
+      </div>
+    </section>
 
     <section class="t s7" id="ranking-sec">
       <div class="t-head">
@@ -388,13 +479,19 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       <div class="barras" id="ranking"></div>
     </section>
 
-    <section class="t s5">
-      <div class="t-head"><div><h2>Qué cambió en 24 horas</h2><p class="t-sub">Contra las 24 horas anteriores</p></div></div>
-      <div class="cambios">
-        <div><h3>Suben</h3><div id="suben"></div></div>
-        <div><h3>Bajan</h3><div id="bajan"></div></div>
-      </div>
-    </section>
+    <div class="s5 col">
+      <section class="t">
+        <div class="t-head"><div><h2>Qué cambió en 24 horas</h2><p class="t-sub">Contra las 24 horas anteriores</p></div></div>
+        <div class="cambios">
+          <div><h3>Suben</h3><div id="suben"></div></div>
+          <div><h3>Bajan</h3><div id="bajan"></div></div>
+        </div>
+      </section>
+      <section class="t">
+        <div class="t-head"><div><h2>Qué tema domina</h2><p class="t-sub">En cuántos departamentos cada tema es el que más hechos suma</p></div></div>
+        <div class="barras temas" id="temas"></div>
+      </section>
+    </div>
 
     <details class="t s12" id="tabla-sec">
       <summary><div><h2>Los 22 departamentos</h2><p class="t-sub">Tabla completa, se ordena por cualquier columna</p></div>
@@ -521,7 +618,7 @@ async function cargar() {
 // El snapshot sin cifras, para la espera: mismos departamentos, todo en cero.
 function enEspera(d) {
   const cero = { hechos7d: 0, hechos24h: 0, hechos24hAnterior: 0, corroborados7d: 0 };
-  return { ...d,
+  return { ...d, hechos: [],
     totales: { ...cero, sinDepartamento7d: 0 },
     departamentos: d.departamentos.map(x => ({ ...x, ...cero, temaPrincipal: null })) };
 }
@@ -541,7 +638,20 @@ function datosDeEjemplo() {
       corroborados7d: Math.round(h7 * (0.35 + (s % 5) / 20)), temaPrincipal: h7 ? temas[s % 4] : null };
   });
   const suma = k => deps.reduce((a, d) => a + d[k], 0);
-  return { version: 1, generado: new Date(Date.now() - 18 * 60000).toISOString(), ventanaDias: 7,
+  // Títulos genéricos a propósito: con ?demo nadie debe leer un hecho real.
+  const ej = ['Bloqueo en un tramo de carretera por protesta de vecinos', 'Corte de agua en varias colonias del municipio',
+    'Deslave obstruye el paso en una ruta departamental', 'Ataque armado en un mercado municipal', 'Incendio forestal en una finca',
+    'Protesta frente a la municipalidad por el alumbrado'];
+  const hechos = [];
+  deps.filter(x => x.hechos7d).forEach((x, k) => {
+    for (let j = 0; j < Math.min(4, x.hechos7d); j++) {
+      const m = Math.max(0, 5 - j - (k % 3));
+      hechos.push({ titulo: ej[(k + j) % ej.length] + ' (ejemplo)', departamento: x.nombre, tema: x.temaPrincipal,
+        medios: m, fuentes: ['Medio A', 'Medio B', 'Medio C'].slice(0, Math.min(3, m)), en24h: j === 0,
+        hasta: new Date(Date.now() - (j + 1) * 3 * 36e5).toISOString(), enlace: 'https://radar.mpluscorp.com/', medioEnlace: m ? 'Medio A' : null });
+    }
+  });
+  return { version: 2, hechos, generado: new Date(Date.now() - 18 * 60000).toISOString(), ventanaDias: 7,
     totales: { hechos7d: suma('hechos7d') + 21, hechos24h: suma('hechos24h') + 3, hechos24hAnterior: suma('hechos24hAnterior') + 2,
       corroborados7d: suma('corroborados7d'), sinDepartamento7d: 21 },
     departamentos: deps, salud: { datosAlDia: true } };
@@ -594,7 +704,10 @@ function pintar(d) {
     const top = [...datos.deps].sort((a, b) => b.hechos7d - a.hechos7d)[0];
     seleccion = top && top.hechos7d ? top.nombre : 'Guatemala';
   }
-  pintarMedida(); pintarDetalle(); pintarTemas(); pintarCambios(); pintarTabla();
+  // Snapshot v2: los hechos con título. Uno v1 no los trae y la página
+  // muestra las secciones vacías con su aviso.
+  datos.hechos = Array.isArray(d.hechos) ? d.hechos : [];
+  pintarMedida(); pintarDetalle(); pintarAqui(); pintarHechos(); pintarTemas(); pintarCambios(); pintarTabla();
   $('pie-gen').textContent = 'actualizado el ' + fecha(d.generado, true);
   primera = false;
 }
@@ -682,6 +795,7 @@ function pintarMapa() {
     if (p.dataset.n === seleccion) svg.insertBefore(p, $('pings'));   // el borde del elegido encima; los pings, más arriba
   });
   pintarPings();
+  pintarEtiqueta();
   let html = '<span class="esc"><span class="sw" style="background:' + CERO + ';outline:1px solid rgba(255,255,255,.18)"></span></span><span>sin hechos</span>';
   if (esc.max > 0) html += '<span class="esc">' + esc.cortes.map(c => '<span class="sw" style="background:' + esc.color(c) + '"></span>').join('') +
     '</span><span>de 1 a ' + fmt.format(esc.max) + ' ' + MEDIDAS[medida].largo + '</span>';
@@ -705,6 +819,21 @@ function pintarPings() {
   });
 }
 
+// El nombre del departamento elegido, escrito sobre el mapa: sin esto, el
+// único indicio era un borde blanco fino y no se veía qué se había elegido.
+function pintarEtiqueta() {
+  const svg = $('mapa'), ns = 'http://www.w3.org/2000/svg';
+  let e = $('etq-sel');
+  if (!e) { e = document.createElementNS(ns, 'text'); e.id = 'etq-sel'; e.setAttribute('class', 'etq-sel'); e.setAttribute('text-anchor', 'middle'); }
+  svg.appendChild(e);   // siempre al final: encima de los departamentos y los pings
+  const p = svg.querySelector('.depto[data-n="' + seleccion + '"]');
+  if (!p) { e.textContent = ''; return; }
+  const b = p.getBBox();
+  e.setAttribute('x', Math.min(560, Math.max(40, b.x + b.width / 2)));
+  e.setAttribute('y', b.y + b.height / 2 - 12);
+  e.textContent = seleccion;
+}
+
 function textoDepto(nombre) {
   const d = datos.deps.find(x => x.nombre === nombre) || {};
   return '<b>' + nombre + '</b><br>' + fmt.format(d.hechos7d || 0) + ' hechos en 7 días · ' + fmt.format(d.hechos24h || 0) + ' en 24 h' +
@@ -724,7 +853,7 @@ function pintarDetalle() {
   const anchoB = v => Math.round(100 * (v || 0) / max) + '%';
   const n = v => espera ? '—' : fmt.format(v || 0);
   $('detalle').innerHTML =
-    '<p class="t-sub" style="margin:0 0 4px">Departamento elegido</p>' +
+    '<span class="viendo"><i></i>Departamento elegido · se cambia tocando el mapa</span>' +
     '<h2 class="nombre">' + d.nombre + '</h2>' +
     (espera ? '<span class="tema no">Cifras en espera</span>'
      : d.temaPrincipal ? '<span class="tema">' + TEMAS[d.temaPrincipal] + '</span>' : '<span class="tema no">Sin hechos en la semana</span>') +
@@ -737,6 +866,49 @@ function pintarDetalle() {
     '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--tinta2)"><span>Corroborados por dos medios o más</span><b class="num" style="color:var(--tinta)">' +
       n(d.corroborados7d) + (d.hechos7d ? ' · ' + pct(d.corroborados7d, d.hechos7d) : '') + '</b></div>' +
     '<div class="meter"><i style="width:' + (d.hechos7d ? Math.round(100 * d.corroborados7d / d.hechos7d) : 0) + '%"></i></div>';
+}
+
+// --- Hechos ------------------------------------------------------------------
+
+const ordenHechos = (a, b) => b.medios - a.medios || new Date(b.hasta) - new Date(a.hasta);
+
+function tarjetaHecho(h, conDep) {
+  const tema = h.tema && TEMAS[h.tema] ? TEMAS[h.tema] : null;
+  const medios = h.medios >= 2
+    ? '<span class="medios cor">' + h.medios + ' medios</span><span>' + nombres(h.fuentes, h.medios) + '</span>'
+    : h.medios === 1 ? '<span class="medios">1 medio</span><span>' + esc(h.fuentes[0] || '') + '</span>'
+    : '<span class="medios">Sin medios independientes</span><span>redes o medios del Estado</span>';
+  const lugar = [conDep ? esc(h.departamento) : null, tema].filter(Boolean).join(' · ');
+  const enlace = h.enlace && /^https?:/.test(h.enlace)
+    ? ' · <a href="' + esc(h.enlace) + '" target="_blank" rel="noopener nofollow">' +
+      (h.medioEnlace ? 'Leer en ' + esc(h.medioEnlace) : 'Ver la primera publicación') + ' ↗</a>' : '';
+  return '<article class="hecho"><h3>' + esc(h.titulo) + '</h3><div class="meta">' +
+    (h.en24h ? '<span class="nuevo">24 h</span>' : '') + medios + '</div>' +
+    '<div class="meta">' + (lugar ? '<span>' + lugar + '</span>' : '') +
+    (h.hasta ? '<span>' + (lugar ? '· ' : '') + 'última nota ' + hace(new Date(h.hasta)) + '</span>' : '') + enlace + '</div></article>';
+}
+function nombres(lista, total) {
+  const l = (lista || []).map(esc), resto = total - l.length;
+  if (!l.length) return '';
+  if (resto > 0) return l.join(', ') + ' y ' + resto + (resto === 1 ? ' más' : ' más');
+  return l.length > 1 ? l.slice(0, -1).join(', ') + ' y ' + l[l.length - 1] : l[0];
+}
+// El título viene del modelo y los nombres de la base: se escapan igual.
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function pintarAqui() {
+  $('aqui-tit').textContent = 'Qué pasó en ' + seleccion;
+  const l = datos.hechos.filter(h => h.departamento === seleccion).sort(ordenHechos).slice(0, 5);
+  $('aqui-lista').innerHTML = l.length ? l.map(h => tarjetaHecho(h, false)).join('')
+    : '<p class="vacio">' + (espera ? 'Aparece cuando las notas queden agrupadas en hechos.'
+      : datos.hechos.length ? 'Sin hechos ubicados aquí en la semana. Puede haber pasado algo que la prensa no cubrió.'
+      : 'Aparece en la próxima actualización.') + '</p>';
+}
+
+function pintarHechos() {
+  const l = datos.hechos.filter(h => h.medios >= 2).sort(ordenHechos).slice(0, 8);
+  $('hechos').innerHTML = l.length ? l.map(h => tarjetaHecho(h, true)).join('')
+    : '<p class="vacio">' + (espera ? 'Aparece cuando las notas queden agrupadas en hechos.' : 'Aparece en la próxima actualización.') + '</p>';
 }
 
 function pintarTemas() {
@@ -814,7 +986,9 @@ function pintarTabla() {
 
 function elegir(nombre, conTeclado) {
   seleccion = nombre;
-  pintarMapa(); pintarDetalle(); pintarTabla();
+  pintarMapa(); pintarDetalle(); pintarAqui(); pintarTabla();
+  // Destello en las dos tarjetas que cambiaron.
+  ['detalle', 'aqui'].forEach(id => { const el = $(id); el.classList.remove('destello'); void el.offsetWidth; el.classList.add('destello'); });
   // En pantallas angostas la ficha queda debajo del mapa: se lleva a la vista.
   // Con teclado no, para no mover el foco de lugar.
   if (window.innerWidth <= 1080 && !conTeclado) $('detalle').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -858,6 +1032,13 @@ document.querySelector('#tabla tbody').addEventListener('click', e => { const tr
 
 $('b-wa').href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(CONFIG.WHATSAPP_TEXTO);
 $('wa-t').textContent = '+' + CONFIG.WHATSAPP.slice(0, 3) + ' ' + CONFIG.WHATSAPP.slice(3, 7) + ' ' + CONFIG.WHATSAPP.slice(7);
+document.querySelectorAll('[data-wa]').forEach(a => { a.href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(a.dataset.wa); });
+// Los dos botones de "cómo se aplica" abren su panel; uno a la vez.
+document.querySelectorAll('.aplica-b button').forEach(b => b.addEventListener('click', () => {
+  const abrir = b.getAttribute('aria-expanded') !== 'true';
+  document.querySelectorAll('.aplica-b button').forEach(x => { x.setAttribute('aria-expanded', 'false'); $(x.dataset.p).hidden = true; });
+  if (abrir) { b.setAttribute('aria-expanded', 'true'); $(b.dataset.p).hidden = false; }
+}));
 $('b-mail').href = 'mailto:' + CONFIG.CORREO + '?subject=' + encodeURIComponent('Radar Público');
 $('mail-t').textContent = CONFIG.CORREO;
 $('b-json').href = CONFIG.SNAPSHOT_URL;
