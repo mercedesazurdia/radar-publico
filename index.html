@@ -348,6 +348,33 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
 }
 @media print{ .barra{position:static;} .seg,.contacto{display:none;} body{background:#fff;} }
 </style>
+<!-- Google Analytics 4: la misma propiedad que mpluscorp.com (G-947ZEF8PJ4),
+     con la misma configuración del mu-plugin mp-analitica (26/11/2026):
+     - De la URL solo se mandan los parámetros de campaña (utm_*, gclid…):
+       así los enlaces compartidos por WhatsApp se atribuyen y no se cuela
+       nada más.
+     - Sin señales de Google ni personalización de anuncios.
+     - La librería se carga después de la página (al primer gesto o en reposo):
+       el panel no espera a Google para pintarse.
+     - Cada enlace con data-mp-medir manda "clic_<valor>" con su ubicación,
+       los mismos nombres que en mpluscorp.com (clic_whatsapp, clic_correo…),
+       para leer los dos sitios juntos. Con ?demo no se mide nada. -->
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+(function(){
+if(/[?&]demo\b/.test(location.search))return;
+var u=new URL(location.href),k=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','gbraid','wbraid','fbclid','li_fat_id'];
+[...u.searchParams.keys()].forEach(function(p){if(k.indexOf(p)<0)u.searchParams.delete(p);});
+var r='';try{if(document.referrer){var x=new URL(document.referrer);r=x.origin+x.pathname;}}catch(e){}
+gtag('js',new Date());
+gtag('config','G-947ZEF8PJ4',{page_location:u.toString(),page_referrer:r,allow_google_signals:false,allow_ad_personalization_signals:false});
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-mp-medir]');if(!a)return;
+gtag('event','clic_'+a.getAttribute('data-mp-medir'),{ubicacion:a.getAttribute('data-mp-ubicacion')||'',transport_type:'beacon'});},true);
+var cargado=false;function cargar(){if(cargado)return;cargado=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-947ZEF8PJ4';document.head.appendChild(s);}
+['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){addEventListener(ev,cargar,{once:true,passive:true});});
+addEventListener('load',function(){if('requestIdleCallback' in window){requestIdleCallback(cargar,{timeout:3000});}else{setTimeout(cargar,3000);}});
+})();
+</script>
 </head>
 <body>
 
@@ -362,7 +389,7 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
     </nav>
     <div class="der">
       <span class="vivo" id="vivo" role="status" aria-live="polite"><span class="p" aria-hidden="true"></span><span id="vivo-t">Cargando…</span></span>
-      <a class="btn pri" href="#contacto">Contacto</a>
+      <a class="btn pri" href="#contacto" data-mp-medir="contacto" data-mp-ubicacion="radar-cabecera">Contacto</a>
     </div>
   </div>
 </header>
@@ -454,8 +481,8 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
           <li><b>Balance semanal</b> <small>lunes</small><br>Qué se instaló, qué se apagó y quién ocupó el espacio.</li>
           <li><b>Informe mensual</b> <small>primer día hábil</small><br>Cómo viene la reputación frente a su entorno.</li>
         </ul>
-        <div class="acc"><a class="btn pri" data-wa="Hola, vi el Radar Público. ¿Cómo aplicaría esto a mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
-          <a class="btn" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
+        <div class="acc"><a class="btn pri" data-mp-medir="whatsapp" data-mp-ubicacion="radar-aplica-empresa" data-wa="Hola, vi el Radar Público. ¿Cómo aplicaría esto a mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
+          <a class="btn" data-mp-medir="sitio-mplus" data-mp-ubicacion="radar-aplica" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
       </div>
       <div class="panel-ap" id="ap-mas" hidden>
         <p>Este panel muestra cuatro temas que ocurren en un lugar. Para una organización, Radar lee además:</p>
@@ -466,8 +493,8 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
           <li>Qué empezó en redes sociales y llegó a la prensa, y cuánto tardó.</li>
           <li>Qué medios no mencionaron a la organización: los vacíos de relación con la prensa.</li>
         </ul>
-        <div class="acc"><a class="btn pri" data-wa="Hola, vi el Radar Público. ¿Qué otra información pueden leer para mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
-          <a class="btn" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
+        <div class="acc"><a class="btn pri" data-mp-medir="whatsapp" data-mp-ubicacion="radar-aplica-mas" data-wa="Hola, vi el Radar Público. ¿Qué otra información pueden leer para mi empresa?" href="#" target="_blank" rel="noopener">Preguntar por WhatsApp</a>
+          <a class="btn" data-mp-medir="sitio-mplus" data-mp-ubicacion="radar-aplica" href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=aplica">Conocer Radar M+</a></div>
       </div>
     </section>
 
@@ -535,20 +562,20 @@ tbody tr{cursor:pointer;} tbody tr:hover td{background:#FAF9FD;} tr.sel td{backg
       <p>Sigue los temas, los voceros y la competencia de cada organización, todos los días, y señala dónde hay espacio para hablar.</p>
     </div>
     <div class="contacto">
-      <a href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel">
+      <a href="https://mpluscorp.com/inteligencia/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel" data-mp-medir="sitio-mplus" data-mp-ubicacion="radar-cierre">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l6-4"/><circle cx="12" cy="12" r="1.5"/></svg>
         <span>Conocer Radar M+<small>mpluscorp.com/inteligencia</small></span></a>
-      <a id="b-wa" href="#" target="_blank" rel="noopener">
+      <a id="b-wa" href="#" target="_blank" rel="noopener" data-mp-medir="whatsapp" data-mp-ubicacion="radar-cierre">
         <svg viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 01-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1120 11.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/></svg>
         <span>Escribir por WhatsApp<small id="wa-t"></small></span></a>
-      <a id="b-mail" href="#">
+      <a id="b-mail" href="#" data-mp-medir="correo" data-mp-ubicacion="radar-cierre">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
         <span>Escribir un correo<small id="mail-t"></small></span></a>
     </div>
   </div>
   <div class="legal">
-    <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel">mpluscorp.com</a></span>
-    <span>Datos abiertos: <a id="b-json" href="#">snapshot.json</a>, con licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" rel="license">CC BY 4.0</a>: se pueden reusar citando "Radar Público, M+ Intelligence" · <span id="pie-gen"></span></span>
+    <span>© <span id="anio"></span> M+ Corp · <a href="https://mpluscorp.com/?utm_source=radar_publico&amp;utm_medium=referral&amp;utm_campaign=panel" data-mp-medir="sitio-mplus" data-mp-ubicacion="radar-pie">mpluscorp.com</a></span>
+    <span>Datos abiertos: <a id="b-json" href="#" data-mp-medir="datos-abiertos" data-mp-ubicacion="radar-pie">snapshot.json</a>, con licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" rel="license">CC BY 4.0</a>: se pueden reusar citando "Radar Público, M+ Intelligence" · <span id="pie-gen"></span></span>
   </div>
 </footer>
 
@@ -880,7 +907,8 @@ function tarjetaHecho(h, conDep) {
     : '<span class="medios">Sin medios independientes</span><span>redes o medios del Estado</span>';
   const lugar = [conDep ? esc(h.departamento) : null, tema].filter(Boolean).join(' · ');
   const enlace = h.enlace && /^https?:/.test(h.enlace)
-    ? ' · <a href="' + esc(h.enlace) + '" target="_blank" rel="noopener nofollow">' +
+    ? ' · <a href="' + esc(h.enlace) + '" target="_blank" rel="noopener nofollow" data-mp-medir="nota" data-mp-ubicacion="' +
+      (conDep ? 'radar-hechos-pais' : 'radar-hechos-departamento') + '">' +
       (h.medioEnlace ? 'Leer en ' + esc(h.medioEnlace) : 'Ver la primera publicación') + ' ↗</a>' : '';
   return '<article class="hecho"><h3>' + esc(h.titulo) + '</h3><div class="meta">' +
     (h.en24h ? '<span class="nuevo">24 h</span>' : '') + medios + '</div>' +
@@ -984,8 +1012,13 @@ function pintarTabla() {
   });
 }
 
+// Interacciones del panel que no son enlaces. gtag existe siempre (lo define
+// el <head>); con ?demo la cola no se manda a ningún lado.
+function medir(evento, datos) { try { gtag('event', evento, datos || {}); } catch (e) { /* medir nunca rompe el panel */ } }
+
 function elegir(nombre, conTeclado) {
   seleccion = nombre;
+  medir('elegir_departamento', { departamento: nombre });
   pintarMapa(); pintarDetalle(); pintarAqui(); pintarTabla();
   // Destello en las dos tarjetas que cambiaron.
   ['detalle', 'aqui'].forEach(id => { const el = $(id); el.classList.remove('destello'); void el.offsetWidth; el.classList.add('destello'); });
@@ -1020,6 +1053,7 @@ function hace(f) {
 
 document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
   medida = b.dataset.m;
+  medir('cambiar_medida', { medida: medida });
   document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
   if (datos) pintarMedida();
 }));
@@ -1037,7 +1071,7 @@ document.querySelectorAll('[data-wa]').forEach(a => { a.href = 'https://wa.me/' 
 document.querySelectorAll('.aplica-b button').forEach(b => b.addEventListener('click', () => {
   const abrir = b.getAttribute('aria-expanded') !== 'true';
   document.querySelectorAll('.aplica-b button').forEach(x => { x.setAttribute('aria-expanded', 'false'); $(x.dataset.p).hidden = true; });
-  if (abrir) { b.setAttribute('aria-expanded', 'true'); $(b.dataset.p).hidden = false; }
+  if (abrir) { b.setAttribute('aria-expanded', 'true'); $(b.dataset.p).hidden = false; medir('abrir_aplica', { panel: b.dataset.p }); }
 }));
 $('b-mail').href = 'mailto:' + CONFIG.CORREO + '?subject=' + encodeURIComponent('Radar Público');
 $('mail-t').textContent = CONFIG.CORREO;
