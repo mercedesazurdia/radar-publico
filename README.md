@@ -14,6 +14,13 @@ lleva claves ni toca la base.
 
 Para cambiar el correo o el WhatsApp: bloque `CONFIG` al inicio del script.
 
+Desde el 26/11/2026 el snapshot (versión 2) trae `hechos` con título, y la
+página los muestra en "Qué pasó en <departamento>" y "Los hechos más
+cubiertos de la semana". Google Analytics: propiedad `G-947ZEF8PJ4` (la de
+mpluscorp.com), con los eventos `clic_<data-mp-medir>`,
+`elegir_departamento`, `cambiar_medida` y `abrir_aplica`. Con `?demo` no se
+mide nada.
+
 SEO y vista previa al compartir:
 - `og.jpg` (1200×630): imagen fija de marca para WhatsApp, LinkedIn, X y
   Facebook. No lleva cifras: cambian cada hora.
